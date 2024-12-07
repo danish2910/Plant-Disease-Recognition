@@ -1,9 +1,9 @@
 class Plant {
   final int plantId;
   final int price;
-  final String size;
+  final String type;
   final double rating;
-  final int humidity;
+  final String severity;
   final String temperature;
   final String category;
   final String plantName;
@@ -17,9 +17,9 @@ class Plant {
         required this.price,
         required this.category,
         required this.plantName,
-        required this.size,
+        required this.type,
         required this.rating,
-        required this.humidity,
+        required this.severity,
         required this.temperature,
         required this.imageURL,
         required this.isFavorated,
@@ -30,29 +30,28 @@ class Plant {
   static List<Plant> plantList = [
     Plant(
         plantId: 0,
-        price: 22,
-        category: 'Indoor',
-        plantName: 'Sanseviera',
-        size: 'Small',
-        rating: 4.5,
-        humidity: 34,
-        temperature: '23 - 34',
-        imageURL: 'assets/images/plant-one.png',
-        isFavorated: true,
+        price: 11,
+        category: 'Outdoor',
+        plantName: 'Bacterial Spot',
+        type: 'Bacterial disease',
+        rating: 4.2,
+        severity: "Moderate to high",
+        temperature: '19 - 22',
+        imageURL: 'assets/images/disease-one.png',
+        isFavorated: false,
         decription:
-        'This plant is one of the best plant. It grows in most of the regions in the world and can survive'
-            'even the harshest weather condition.',
+        'Bacterial spot is caused by Xanthomonas campestris pv. vesicatora. It causes spots on its leaves and fruits. This disease is favored by warmer temperatures (24 to 30°C) and high moisture.',
         isSelected: false),
     Plant(
         plantId: 1,
-        price: 11,
-        category: 'Outdoor',
-        plantName: 'Philodendron',
-        size: 'Medium',
-        rating: 4.8,
-        humidity: 56,
-        temperature: '19 - 22',
-        imageURL: 'assets/images/plant-two.png',
+        price: 18,
+        category: 'Indoor',
+        plantName: 'Early Blight',
+        type: 'Large',
+        rating: 4.2,
+        severity: "Moderate to high",
+        temperature: '22 - 25',
+        imageURL: 'assets/images/disease-two.png',
         isFavorated: false,
         decription:
         'This plant is one of the best plant. It grows in most of the regions in the world and can survive'
@@ -60,14 +59,14 @@ class Plant {
         isSelected: false),
     Plant(
         plantId: 2,
-        price: 18,
-        category: 'Indoor',
-        plantName: 'Beach Daisy',
-        size: 'Large',
-        rating: 4.7,
-        humidity: 34,
-        temperature: '22 - 25',
-        imageURL: 'assets/images/plant-three.png',
+        price: 30,
+        category: 'Outdoor',
+        plantName: 'Late Blight',
+        type: 'Small',
+        rating: 4.5,
+        severity: "Moderate to high",
+        temperature: '23 - 28',
+        imageURL: 'assets/images/disease-three.png',
         isFavorated: false,
         decription:
         'This plant is one of the best plant. It grows in most of the regions in the world and can survive'
@@ -75,15 +74,15 @@ class Plant {
         isSelected: false),
     Plant(
         plantId: 3,
-        price: 30,
-        category: 'Outdoor',
-        plantName: 'Big Bluestem',
-        size: 'Small',
-        rating: 4.5,
-        humidity: 35,
-        temperature: '23 - 28',
-        imageURL: 'assets/images/plant-one.png',
-        isFavorated: false,
+        price: 24,
+        category: 'Recommended',
+        plantName: 'Leaf Mold',
+        type: 'Large',
+        rating: 4.1,
+        severity: "Moderate to high",
+        temperature: '12 - 16',
+        imageURL: 'assets/images/disease-four.png',
+        isFavorated: true,
         decription:
         'This plant is one of the best plant. It grows in most of the regions in the world and can survive'
             'even the harshest weather condition.',
@@ -91,28 +90,28 @@ class Plant {
     Plant(
         plantId: 4,
         price: 24,
-        category: 'Recommended',
-        plantName: 'Big Bluestem',
-        size: 'Large',
-        rating: 4.1,
-        humidity: 66,
-        temperature: '12 - 16',
-        imageURL: 'assets/images/plant-four.png',
-        isFavorated: true,
+        category: 'Outdoor',
+        plantName: 'Septoria Leaf Spot',
+        type: 'Medium',
+        rating: 4.4,
+        severity: "Moderate to high",
+        temperature: '15 - 18',
+        imageURL: 'assets/images/disease-five.png',
+        isFavorated: false,
         decription:
         'This plant is one of the best plant. It grows in most of the regions in the world and can survive'
             'even the harshest weather condition.',
         isSelected: false),
     Plant(
         plantId: 5,
-        price: 24,
-        category: 'Outdoor',
-        plantName: 'Meadow Sage',
-        size: 'Medium',
-        rating: 4.4,
-        humidity: 36,
-        temperature: '15 - 18',
-        imageURL: 'assets/images/plant-five.png',
+        price: 19,
+        category: 'Garden',
+        plantName: 'Spider Mites: Two-spotted Spider Mite',
+        type: 'Small',
+        rating: 4.2,
+        severity: "Moderate to high",
+        temperature: '23 - 26',
+        imageURL: 'assets/images/disease-six.png',
         isFavorated: false,
         decription:
         'This plant is one of the best plant. It grows in most of the regions in the world and can survive'
@@ -120,14 +119,14 @@ class Plant {
         isSelected: false),
     Plant(
         plantId: 6,
-        price: 19,
+        price: 23,
         category: 'Garden',
-        plantName: 'Plumbago',
-        size: 'Small',
-        rating: 4.2,
-        humidity: 46,
-        temperature: '23 - 26',
-        imageURL: 'assets/images/plant-six.png',
+        plantName: 'Target Spot',
+        type: 'Medium',
+        rating: 4.5,
+        severity: "Moderate to high",
+        temperature: '21 - 24',
+        imageURL: 'assets/images/disease-seven.png',
         isFavorated: false,
         decription:
         'This plant is one of the best plant. It grows in most of the regions in the world and can survive'
@@ -135,14 +134,14 @@ class Plant {
         isSelected: false),
     Plant(
         plantId: 7,
-        price: 23,
-        category: 'Garden',
-        plantName: 'Tritonia',
-        size: 'Medium',
-        rating: 4.5,
-        humidity: 34,
-        temperature: '21 - 24',
-        imageURL: 'assets/images/plant-seven.png',
+        price: 46,
+        category: 'Recommended',
+        plantName: 'Tomato Yellow Leaf Curl Virus',
+        type: 'Medium',
+        rating: 4.7,
+        severity: "Moderate to high",
+        temperature: '21 - 25',
+        imageURL: 'assets/images/disease-eight.png',
         isFavorated: false,
         decription:
         'This plant is one of the best plant. It grows in most of the regions in the world and can survive'
@@ -152,12 +151,12 @@ class Plant {
         plantId: 8,
         price: 46,
         category: 'Recommended',
-        plantName: 'Tritonia',
-        size: 'Medium',
+        plantName: 'Tomato Mosaic Virus',
+        type: 'Medium',
         rating: 4.7,
-        humidity: 46,
+        severity: "Moderate to high",
         temperature: '21 - 25',
-        imageURL: 'assets/images/plant-eight.png',
+        imageURL: 'assets/images/disease-nine.png',
         isFavorated: false,
         decription:
         'This plant is one of the best plant. It grows in most of the regions in the world and can survive'

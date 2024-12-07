@@ -111,13 +111,13 @@ class _DetailPageState extends State<DetailPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           PlantFeature(
-                            title: 'Size',
-                            plantFeature: _plantList[widget.plantId].size,
+                            title: 'Type',
+                            plantFeature: _plantList[widget.plantId].type,
                           ),
                           PlantFeature(
-                            title: 'Humidity',
+                            title: 'Severity',
                             plantFeature:
-                                _plantList[widget.plantId].humidity.toString(),
+                                _plantList[widget.plantId].severity,
                           ),
                           PlantFeature(
                             title: 'Temperature',
