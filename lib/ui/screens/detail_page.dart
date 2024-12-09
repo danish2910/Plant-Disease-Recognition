@@ -93,47 +93,43 @@ class _DetailPageState extends State<DetailPage> {
             right: 20,
             child: Container(
               width: size.width * .8,
-              height: size.height * .8,
+              height: size.height * .4, // Adjust height as needed
               padding: const EdgeInsets.all(20),
-              child: Stack(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // Image
-                  Positioned(
-                    top: 10,
-                    left: 0,
-                    child: SizedBox(
-                      height: 250, // Constrained height
-                      width: size.width * 0.6, // Constrained width
-                      child: Image.asset(
-                        _plantList[widget.plantId].imageURL,
-                        fit: BoxFit.contain, // Prevents overflow
-                      ),
+                  // Image Section
+                  Expanded(
+                    flex: 1,
+                    child: Image.asset(
+                      _plantList[widget.plantId].imageURL,
+                      fit: BoxFit.contain, // Ensures the image scales nicely
+                      height: 250, // Adjust height to constrain the image
                     ),
                   ),
-                  // Plant Features
-                  Positioned(
-                    top: 10,
-                    right: 0,
-                    child: SizedBox(
-                      height: 200,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          PlantFeature(
-                            title: 'Type',
-                            plantFeature: _plantList[widget.plantId].type,
-                          ),
-                          PlantFeature(
-                            title: 'Severity',
-                            plantFeature: _plantList[widget.plantId].severity,
-                          ),
-                          PlantFeature(
-                            title: 'Temperature',
-                            plantFeature: _plantList[widget.plantId].temperature,
-                          ),
-                        ],
-                      ),
+                  const SizedBox(width: 20), // Add horizontal spacing between image and features
+                  // Plant Features Section
+                  Expanded(
+                    flex: 1,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        PlantFeature(
+                          title: 'Type',
+                          plantFeature: _plantList[widget.plantId].type,
+                        ),
+                        const SizedBox(height: 10), // Add spacing between features
+                        PlantFeature(
+                          title: 'Severity',
+                          plantFeature: _plantList[widget.plantId].severity,
+                        ),
+                        const SizedBox(height: 10), // Add spacing between features
+                        PlantFeature(
+                          title: 'Temperature',
+                          plantFeature: _plantList[widget.plantId].temperature,
+                        ),
+                      ],
                     ),
                   ),
                 ],
