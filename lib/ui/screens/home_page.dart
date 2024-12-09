@@ -40,8 +40,9 @@ class _HomePageState extends State<HomePage> {
       filteredPlants = _plantList; // Show all plants for 'All'
     } else {
       String selectedCategory = _plantTypes[selectedIndex];
-      filteredPlants =
-          _plantList.where((plant) => plant.category == selectedCategory).toList();
+      filteredPlants = _plantList
+          .where((plant) => plant.category == selectedCategory)
+          .toList();
     }
 
     if (searchQuery.isNotEmpty) {
@@ -176,7 +177,8 @@ class _HomePageState extends State<HomePage> {
                                   setState(() {
                                     bool isFavorited = toggleIsFavorated(
                                         filteredPlants[index].isFavorated);
-                                    filteredPlants[index].isFavorated = isFavorited;
+                                    filteredPlants[index].isFavorated =
+                                        isFavorited;
                                   });
                                 },
                                 icon: Icon(
@@ -194,11 +196,21 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Positioned(
-                            left: 50,
-                            right: 50,
-                            top: 50,
-                            bottom: 50,
-                            child: Image.asset(filteredPlants[index].imageURL),
+                            left: 30, // Adjust as needed for positioning
+                            right: 30, // Adjust as needed for positioning
+                            top: 30, // Adjust as needed for positioning
+                            bottom: 30, // Adjust as needed for positioning
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors
+                                    .white70, // Replace with desired background color
+                              ),
+                              padding: const EdgeInsets.all(
+                                  5), // Adjust padding for image size
+                              child:
+                                  Image.asset(filteredPlants[index].imageURL),
+                            ),
                           ),
                           Positioned(
                             bottom: 15,
