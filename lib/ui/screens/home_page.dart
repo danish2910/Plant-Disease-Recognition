@@ -13,78 +13,91 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  @override
-  Widget build(BuildContext context) {
-    int selectedIndex = 0;
-    Size size = MediaQuery.of(context).size;
+  int selectedIndex = 0; // Keeps track of selected category
+  List<Plant> _plantList = Plant.plantList;
+  String searchQuery = ""; // Tracks search input
 
-    List<Plant> _plantList = Plant.plantList;
+  // Plants categories
+  List<String> _plantTypes = [
+    'All',
+    'Bacterial',
+    'Fungal',
+    'Pest',
+    'Viral',
+  ];
 
-    //Plants category
-    List<String> _plantTypes = [
-      'Recommended',
-      'Indoor',
-      'Outdoor',
-      'Garden',
-      'Supplement',
-    ];
+  // Toggle Favorite button
+  bool toggleIsFavorated(bool isFavorited) {
+    return !isFavorited;
+  }
 
-    //Toggle Favorite button
-    bool toggleIsFavorated(bool isFavorited) {
-      return !isFavorited;
+  // Filter the plants based on selected category and search query
+  List<Plant> _getFilteredPlants() {
+    List<Plant> filteredPlants;
+    if (selectedIndex == 0) {
+      filteredPlants = _plantList; // Show all plants for 'All'
+    } else {
+      String selectedCategory = _plantTypes[selectedIndex];
+      filteredPlants =
+          _plantList.where((plant) => plant.category == selectedCategory).toList();
     }
 
+    if (searchQuery.isNotEmpty) {
+      filteredPlants = filteredPlants
+          .where((plant) =>
+              plant.plantName.toLowerCase().contains(searchQuery.toLowerCase()))
+          .toList();
+    }
+
+    return filteredPlants;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
+
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.only(top: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                  ),
-                  width: size.width * .9,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.search,
-                        color: Colors.black54.withOpacity(.6),
-                      ),
-                      const Expanded(
-                          child: TextField(
-                        showCursor: false,
-                        decoration: InputDecoration(
-                          hintText: 'Search Plant',
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Search Bar
+            Container(
+              padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      onChanged: (value) {
+                        setState(() {
+                          searchQuery = value; // Update the search query
+                        });
+                      },
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: Colors.black54.withOpacity(.6),
                         ),
-                      )),
-                      Icon(
-                        Icons.mic,
-                        color: Colors.black54.withOpacity(.6),
+                        hintText: 'Search Plant Disease',
+                        filled: true,
+                        fillColor: Constants.primaryColor.withOpacity(.1),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                  decoration: BoxDecoration(
-                    color: Constants.primaryColor.withOpacity(.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                )
-              ],
+                  const SizedBox(width: 8),
+                ],
+              ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            height: 50.0,
-            width: size.width,
-            child: ListView.builder(
+            // Category Buttons
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              height: 50.0,
+              width: size.width,
+              child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: _plantTypes.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -93,40 +106,57 @@ class _HomePageState extends State<HomePage> {
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          selectedIndex = index;
+                          selectedIndex = index; // Update selected category
                         });
                       },
-                      child: Text(
-                        _plantTypes[index],
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: selectedIndex == index
-                              ? FontWeight.bold
-                              : FontWeight.w300,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
                           color: selectedIndex == index
                               ? Constants.primaryColor
-                              : Constants.blackColor,
+                              : Constants.primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Center(
+                          child: Text(
+                            _plantTypes[index],
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                              color: selectedIndex == index
+                                  ? Colors.white
+                                  : Constants.blackColor,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   );
-                }),
-          ),
-          SizedBox(
-            height: size.height * .3,
-            child: ListView.builder(
-                itemCount: _plantList.length,
+                },
+              ),
+            ),
+            // Horizontal List of Plants
+            SizedBox(
+              height: size.height * .3,
+              child: ListView.builder(
+                itemCount: _getFilteredPlants().length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {
+                  List<Plant> filteredPlants = _getFilteredPlants();
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context,
-                          PageTransition(
-                              child: DetailPage(
-                                plantId: _plantList[index].plantId,
-                              ),
-                              type: PageTransitionType.bottomToTop));
+                        context,
+                        PageTransition(
+                          child: DetailPage(
+                            plantId: filteredPlants[index].plantId,
+                          ),
+                          type: PageTransitionType.bottomToTop,
+                        ),
+                      );
                     },
                     child: Container(
                       width: 200,
@@ -143,12 +173,12 @@ class _HomePageState extends State<HomePage> {
                                 onPressed: () {
                                   setState(() {
                                     bool isFavorited = toggleIsFavorated(
-                                        _plantList[index].isFavorated);
-                                    _plantList[index].isFavorated = isFavorited;
+                                        filteredPlants[index].isFavorated);
+                                    filteredPlants[index].isFavorated = isFavorited;
                                   });
                                 },
                                 icon: Icon(
-                                  _plantList[index].isFavorated == true
+                                  filteredPlants[index].isFavorated == true
                                       ? Icons.favorite
                                       : Icons.favorite_border,
                                   color: Constants.primaryColor,
@@ -166,7 +196,7 @@ class _HomePageState extends State<HomePage> {
                             right: 50,
                             top: 50,
                             bottom: 50,
-                            child: Image.asset(_plantList[index].imageURL),
+                            child: Image.asset(filteredPlants[index].imageURL),
                           ),
                           Positioned(
                             bottom: 15,
@@ -175,14 +205,14 @@ class _HomePageState extends State<HomePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  _plantList[index].category,
+                                  filteredPlants[index].category,
                                   style: const TextStyle(
                                     color: Colors.white70,
                                     fontSize: 16,
                                   ),
                                 ),
                                 Text(
-                                  _plantList[index].plantName,
+                                  filteredPlants[index].plantName,
                                   style: const TextStyle(
                                     color: Colors.white70,
                                     fontSize: 15,
@@ -190,24 +220,6 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                               ],
-                            ),
-                          ),
-                          Positioned(
-                            bottom: 15,
-                            right: 20,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                r'$' + _plantList[index].price.toString(),
-                                style: TextStyle(
-                                    color: Constants.primaryColor,
-                                    fontSize: 16),
-                              ),
                             ),
                           ),
                         ],
@@ -218,35 +230,52 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   );
-                }),
-          ),
-          Container(
-            padding: const EdgeInsets.only(left: 16, bottom: 20, top: 20),
-            child: const Text(
-              'New Plants',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
+                },
               ),
             ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            height: size.height * .5,
-            child: ListView.builder(
-                itemCount: _plantList.length,
+            // Vertical List of New Plants
+            Container(
+              padding: const EdgeInsets.only(left: 16, bottom: 20, top: 20),
+              child: const Text(
+                'New Plants',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                ),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              height: size.height * .5,
+              child: ListView.builder(
+                itemCount: _getFilteredPlants().length,
                 scrollDirection: Axis.vertical,
                 physics: const BouncingScrollPhysics(),
                 itemBuilder: (BuildContext context, int index) {
+                  List<Plant> filteredPlants = _getFilteredPlants();
                   return GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, PageTransition(child: DetailPage(plantId: _plantList[index].plantId), type: PageTransitionType.bottomToTop));
-                      },
-                      child: PlantWidget(index: index, plantList: _plantList));
-                }),
-          ),
-        ],
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          child: DetailPage(
+                            plantId: filteredPlants[index].plantId,
+                          ),
+                          type: PageTransitionType.bottomToTop,
+                        ),
+                      );
+                    },
+                    child: PlantWidget(
+                      index: index,
+                      plantList: filteredPlants,
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 }

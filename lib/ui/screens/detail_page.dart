@@ -11,12 +11,12 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  //Toggle Favorite button
-  bool toggleIsFavorated(bool isFavorited) {
+  // Toggle Favorite button
+  bool toggleIsFavorited(bool isFavorited) {
     return !isFavorited;
   }
 
-  //Toggle add remove from cart
+  // Toggle add/remove from cart
   bool toggleIsSelected(bool isSelected) {
     return !isSelected;
   }
@@ -28,6 +28,7 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       body: Stack(
         children: [
+          // Close and Favorite Buttons
           Positioned(
             top: 50,
             left: 20,
@@ -64,25 +65,28 @@ class _DetailPageState extends State<DetailPage> {
                       color: Constants.primaryColor.withOpacity(.15),
                     ),
                     child: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            bool isFavorited = toggleIsFavorated(
-                                _plantList[widget.plantId].isFavorated);
-                            _plantList[widget.plantId].isFavorated =
-                                isFavorited;
-                          });
-                        },
-                        icon: Icon(
-                          _plantList[widget.plantId].isFavorated == true
-                              ? Icons.favorite
-                              : Icons.favorite_border,
-                          color: Constants.primaryColor,
-                        )),
+                      onPressed: () {
+                        setState(() {
+                          bool isFavorited = toggleIsFavorited(
+                              _plantList[widget.plantId].isFavorated);
+                          _plantList[widget.plantId].isFavorated =
+                              isFavorited;
+                        });
+                      },
+                      icon: Icon(
+                        _plantList[widget.plantId].isFavorated == true
+                            ? Icons.favorite
+                            : Icons.favorite_border,
+                        color: Constants.primaryColor,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
           ),
+
+          // Image and Features Section
           Positioned(
             top: 100,
             left: 20,
@@ -93,14 +97,20 @@ class _DetailPageState extends State<DetailPage> {
               padding: const EdgeInsets.all(20),
               child: Stack(
                 children: [
+                  // Image
                   Positioned(
                     top: 10,
                     left: 0,
                     child: SizedBox(
-                      height: 350,
-                      child: Image.asset(_plantList[widget.plantId].imageURL),
+                      height: 250, // Constrained height
+                      width: size.width * 0.6, // Constrained width
+                      child: Image.asset(
+                        _plantList[widget.plantId].imageURL,
+                        fit: BoxFit.contain, // Prevents overflow
+                      ),
                     ),
                   ),
+                  // Plant Features
                   Positioned(
                     top: 10,
                     right: 0,
@@ -116,13 +126,11 @@ class _DetailPageState extends State<DetailPage> {
                           ),
                           PlantFeature(
                             title: 'Severity',
-                            plantFeature:
-                                _plantList[widget.plantId].severity,
+                            plantFeature: _plantList[widget.plantId].severity,
                           ),
                           PlantFeature(
                             title: 'Temperature',
-                            plantFeature:
-                                _plantList[widget.plantId].temperature,
+                            plantFeature: _plantList[widget.plantId].temperature,
                           ),
                         ],
                       ),
@@ -132,6 +140,8 @@ class _DetailPageState extends State<DetailPage> {
               ),
             ),
           ),
+
+          // Bottom Description Section
           Positioned(
             bottom: 0,
             left: 0,
@@ -165,40 +175,12 @@ class _DetailPageState extends State<DetailPage> {
                               fontSize: 30.0,
                             ),
                           ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            r'$' + _plantList[widget.plantId].price.toString(),
-                            style: TextStyle(
-                              color: Constants.blackColor,
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            _plantList[widget.plantId].rating.toString(),
-                            style: TextStyle(
-                              fontSize: 30.0,
-                              color: Constants.primaryColor,
-                            ),
-                          ),
-                          Icon(
-                            Icons.star,
-                            size: 30.0,
-                            color: Constants.primaryColor,
-                          ),
+                          const SizedBox(height: 10),
                         ],
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 5.0,
-                  ),
+                  const SizedBox(height: 5.0),
                   Expanded(
                     child: Text(
                       _plantList[widget.plantId].decription,
@@ -216,6 +198,8 @@ class _DetailPageState extends State<DetailPage> {
           ),
         ],
       ),
+
+      // Floating Action Buttons
       floatingActionButton: SizedBox(
         width: size.width * .9,
         height: 50,
@@ -224,42 +208,49 @@ class _DetailPageState extends State<DetailPage> {
             Container(
               height: 50,
               width: 50,
-              child: IconButton(onPressed: (){
-                setState(() {
-                  bool isSelected = toggleIsSelected(_plantList[widget.plantId].isSelected);
-
-                  _plantList[widget.plantId].isSelected = isSelected;
-                });
-              }, icon: Icon(
-                Icons.shopping_cart,
-                color: _plantList[widget.plantId].isSelected == true ? Colors.white : Constants.primaryColor,
-              )),
+              child: IconButton(
+                onPressed: () {
+                  setState(() {
+                    bool isSelected = toggleIsSelected(
+                        _plantList[widget.plantId].isSelected);
+                    _plantList[widget.plantId].isSelected = isSelected;
+                  });
+                },
+                icon: Icon(
+                  Icons.shopping_cart,
+                  color: _plantList[widget.plantId].isSelected == true
+                      ? Colors.white
+                      : Constants.primaryColor,
+                ),
+              ),
               decoration: BoxDecoration(
-                  color: _plantList[widget.plantId].isSelected == true ? Constants.primaryColor.withOpacity(.5) : Colors.white,
-                  borderRadius: BorderRadius.circular(50),
+                color: _plantList[widget.plantId].isSelected == true
+                    ? Constants.primaryColor.withOpacity(.5)
+                    : Colors.white,
+                borderRadius: BorderRadius.circular(50),
+                boxShadow: [
+                  BoxShadow(
+                    offset: const Offset(0, 1),
+                    blurRadius: 5,
+                    color: Constants.primaryColor.withOpacity(.3),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 20),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Constants.primaryColor,
+                  borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
                       offset: const Offset(0, 1),
                       blurRadius: 5,
                       color: Constants.primaryColor.withOpacity(.3),
                     ),
-                  ]),
-            ),
-            const SizedBox(
-              width: 20,
-            ),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Constants.primaryColor,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        offset: const Offset(0, 1),
-                        blurRadius: 5,
-                        color: Constants.primaryColor.withOpacity(.3),
-                      )
-                    ]),
+                  ],
+                ),
                 child: const Center(
                   child: Text(
                     'BUY NOW',
@@ -278,6 +269,7 @@ class _DetailPageState extends State<DetailPage> {
   }
 }
 
+// PlantFeature Widget
 class PlantFeature extends StatelessWidget {
   final String plantFeature;
   final String title;
@@ -305,7 +297,7 @@ class PlantFeature extends StatelessWidget {
             fontSize: 18.0,
             fontWeight: FontWeight.bold,
           ),
-        )
+        ),
       ],
     );
   }
