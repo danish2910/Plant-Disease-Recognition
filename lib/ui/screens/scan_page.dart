@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fypapp/constants.dart';
+import 'package:http/http.dart' as http;
 
 class ScanPage extends StatefulWidget {
   const ScanPage({Key? key}) : super(key: key);
@@ -10,93 +11,49 @@ class ScanPage extends StatefulWidget {
 
 class _ScanPageState extends State<ScanPage> {
   @override
-  Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+  String? imagePath;
+  final imagePicker = ImagePicker();
+  img.Image? image;
+  Map<String, double>? classification;
+  bool cameraIsAvailable = Platform.isAndroid || Platform.isIOS;
+  late List<CameraDescription> cameraList;
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
+  bool _isLoading = false;
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          Positioned(
-              top: 50,
-              left: 20,
-              right: 20,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        color: Constants.primaryColor.withOpacity(.15),
-                      ),
-                      child: Icon(
-                        Icons.close,
-                        color: Constants.primaryColor,
-                      ),
-                    ),
-                  ),
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     debugPrint('favorite');
-                  //   },
-                  //   child: Container(
-                  //     height: 40,
-                  //     width: 40,
-                  //     decoration: BoxDecoration(
-                  //       borderRadius: BorderRadius.circular(25),
-                  //       color: Constants.primaryColor.withOpacity(.15),
-                  //     ),
-                  //     child: IconButton(
-                  //       onPressed: () {},
-                  //       icon: Icon(
-                  //         Icons.share,
-                  //         color: Constants.primaryColor,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                ],
-              )),
-          Positioned(
-            top: 100,
-            right: 20,
-            left: 20,
-            child: Container(
-              width: size.width * .8,
-              height: size.height * .8,
-              padding: const EdgeInsets.all(20),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/images/code-scan.png',
-                      height: 100,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      'Tap to Scan',
-                      style: TextStyle(
-                        color: Constants.primaryColor.withOpacity(.80),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+  void cleanResult(){
+    imagePath = null;
+    image = null;
+    classification = null;
+    setState(() {
+    });
   }
-}
+
+  Future<void> takePicture() async {
+    try{
+      await _initializeControllerFuture;
+      final cameraImage = await _controller.takePicture();
+      imagePath = cameraImage.path;
+    }catch (e) {
+      print(e);
+    }
+  }
+
+  //Process picked image
+  Future<int> processImage() async {
+    // returns -1 if API is inaccessible
+    // returns 0 if API returns result
+    if (imagePath != null){
+      // Step 2: Create a multipart request using the correct key name expected by the server
+      var uri = Uri.parse(
+          'https://danish.muniza.fyi/infer/'); // Replace with your API URL
+      var request =
+          http.MultipartRequest('POST', uri); // Assuming the method is POST
+      // Step 3: Add the image to the request with the correct key name
+      // If the API expects the key 'image', use that here.
+      var imageFile = await http.MultipartFile.fromPath(
+          'image', imagePath!); // 'image' is the key here
+      request.files.add(imageFile);
+      request.headers["X-API-KEY"] = "myapp_key";
+    }
+  }
