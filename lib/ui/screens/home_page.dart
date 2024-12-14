@@ -2,10 +2,23 @@
 
 import 'package:flutter/material.dart';
 import 'package:fypapp/constants.dart';
+import 'package:fypapp/models/inference_history_provider.dart';
 import 'package:fypapp/models/plants.dart';
 import 'package:fypapp/ui/screens/detail_page.dart';
 import 'package:fypapp/ui/screens/widgets/plant_widget.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
+
+//Inference history model
+class InferenceHistory {
+  final String dateTime;
+  final String result;
+
+  InferenceHistory({
+    required this.dateTime,
+    required this.result,
+  });
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -26,6 +39,11 @@ class _HomePageState extends State<HomePage> {
     'Fungal',
     'Pest',
     'Viral',
+  ];
+
+  // Inference History List (for mock data)
+  List<InferenceHistory> inferenceHistory = [
+    
   ];
 
   // Toggle Favorite button
@@ -247,45 +265,50 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ),
-            // Vertical List of New Plants
+            // Inference History Section
             Container(
               padding: const EdgeInsets.only(left: 16, bottom: 20, top: 20),
               child: const Text(
-                'New Plants',
+                'Inference History',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18.0,
                 ),
               ),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              height: size.height * .5,
-              child: ListView.builder(
-                itemCount: _getFilteredPlants().length,
-                scrollDirection: Axis.vertical,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (BuildContext context, int index) {
-                  List<Plant> filteredPlants = _getFilteredPlants();
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          child: DetailPage(
-                            plantId: filteredPlants[index].plantId,
+            // Display Inference History
+            Consumer<InferenceHistoryProvider>(
+              builder: (context, inferenceHistoryProvider, child) {
+                List<Map<String, dynamic>> inferenceHistory = inferenceHistoryProvider.inferenceHistory;
+
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  height: size.height * .3,
+                  child: ListView.builder(
+                    itemCount: inferenceHistory.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var history = inferenceHistory[index];
+                      return Card(
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        elevation: 3,
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.all(16),
+                          title: Text(
+                            "Inference on ${history['timestamp']}",
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          type: PageTransitionType.bottomToTop,
+                          subtitle: Text(
+                            history['classification'].toString(),
+                            style: const TextStyle(color: Colors.black54),
+                          ),
                         ),
                       );
                     },
-                    child: PlantWidget(
-                      index: index,
-                      plantList: filteredPlants,
-                    ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ],
         ),

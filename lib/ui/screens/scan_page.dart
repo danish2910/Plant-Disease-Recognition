@@ -9,6 +9,8 @@ import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:fypapp/weather_constants.dart';
+import 'package:provider/provider.dart';
+import 'package:fypapp/models/inference_history_provider.dart';
 
 class ScanPage extends StatefulWidget {
   const ScanPage({super.key});
@@ -27,6 +29,9 @@ class _ScanPageState extends State<ScanPage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   bool _isLoading = false;
+  List<Map<String, dynamic>> inferenceHistory = [];     // List to store inference history
+
+
 
   void cleanResult() {
     imagePath = null;
@@ -85,11 +90,16 @@ class _ScanPageState extends State<ScanPage> {
             List<double> predictionValues = List<double>.from(predictions[0]);
 
             classification = await getSortedPredictionMap(predictionValues);
+
+            // Add inference history to the provider
+          Provider.of<InferenceHistoryProvider>(context, listen: false).addInference({
+            'timestamp': DateTime.now(),
+            'classification': classification,
+          });
+
             return 0;
           }
         } else {
-          // Log the error and the response body for debugging
-          // var responseBody = await streamedResponse.stream.bytesToString();
 
           return -1;
         }
@@ -253,9 +263,10 @@ class _ScanPageState extends State<ScanPage> {
                             children: [
                               IconButton.filled(
                                 onPressed: () async {
-                                  // setState(() {
-                                  //   _isLoading = true;
-                                  // });
+                                    cleanResult();
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
                                   await takePicture();
                                   var res = await processImage();
                                   setState(() {
