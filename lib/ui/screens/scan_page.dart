@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
@@ -5,6 +7,7 @@ import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fypapp/models/plants.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -29,9 +32,8 @@ class _ScanPageState extends State<ScanPage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   bool _isLoading = false;
-  List<Map<String, dynamic>> inferenceHistory = [];     // List to store inference history
-
-
+  List<Map<String, dynamic>> inferenceHistory =
+      []; // List to store inference history
 
   void cleanResult() {
     imagePath = null;
@@ -91,16 +93,66 @@ class _ScanPageState extends State<ScanPage> {
 
             classification = await getSortedPredictionMap(predictionValues);
 
-            // Add inference history to the provider
-          Provider.of<InferenceHistoryProvider>(context, listen: false).addInference({
-            'timestamp': DateTime.now(),
-            'classification': classification,
-          });
+            //Get highest confidence
+            var highestConfidenceEntry = classification!.entries.first;
+            Plant matchedPlant = Plant.plantList.firstWhere(
+              (plant) => plant.key == highestConfidenceEntry.key,
+              orElse: () => Plant(
+                key: 'Unknown',
+                plantId: -1,
+                category: 'Unknown',
+                plantName: 'Unknown Plant',
+                type: 'Unknown Type',
+                rating: 0.0,
+                severity: "Unknown",
+                temperature: 'N/A',
+                imageURL: 'assets/images/unknown.png',
+                isFavorated: false,
+                description: 'No description available',
+                isSelected: false,
+              ),
+            );
+
+            if (matchedPlant != null) {
+              //Add to inference history
+              inferenceHistory.add({
+                'plantName' : matchedPlant.plantName,
+                'confidence' : highestConfidenceEntry.value,
+                'timestamp' : DateTime.now().toString(),
+              });
+              // Show plant details in a popup
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(matchedPlant.plantName),
+                  content: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Type: ${matchedPlant.type}'),
+                      Text('Severity: ${matchedPlant.severity}'),
+                      Text('Temperature: ${matchedPlant.temperature}'),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Description:',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(matchedPlant.description),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            }
 
             return 0;
           }
         } else {
-
           return -1;
         }
       } catch (e) {
@@ -263,10 +315,10 @@ class _ScanPageState extends State<ScanPage> {
                             children: [
                               IconButton.filled(
                                 onPressed: () async {
-                                    cleanResult();
-                                    setState(() {
-                                      _isLoading = true;
-                                    });
+                                  cleanResult();
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
                                   await takePicture();
                                   var res = await processImage();
                                   setState(() {

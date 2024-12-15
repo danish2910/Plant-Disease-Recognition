@@ -179,7 +179,7 @@ class _DetailPageState extends State<DetailPage> {
                   const SizedBox(height: 5.0),
                   Expanded(
                     child: Text(
-                      _plantList[widget.plantId].decription,
+                      _plantList[widget.plantId].description,
                       textAlign: TextAlign.justify,
                       style: TextStyle(
                         height: 1.5,

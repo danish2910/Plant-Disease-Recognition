@@ -300,7 +300,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           subtitle: Text(
-                            history['classification'].toString(),
+                            history['plantName'].toString(),
                             style: const TextStyle(color: Colors.black54),
                           ),
                         ),

@@ -8,7 +8,7 @@ import 'ui/onboarding_screen.dart';
 void main() {
   runApp(
     ChangeNotifierProvider(
-      create: (_) => InferenceHistoryProvider(),
+      create: (context) => InferenceHistoryProvider(),
       child: const MyApp(),
       ),
   );
