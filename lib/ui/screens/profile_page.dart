@@ -69,26 +69,7 @@ class ProfilePage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: const [
-                  ProfileWidget(
-                    icon: Icons.person,
-                    title: 'My Profile',
-                  ),
-                  ProfileWidget(
-                    icon: Icons.settings,
-                    title: 'Settings',
-                  ),
-                  ProfileWidget(
-                    icon: Icons.notifications,
-                    title: 'Notifications',
-                  ),
-                  ProfileWidget(
-                    icon: Icons.chat,
-                    title: 'FAQs',
-                  ),
-                  ProfileWidget(
-                    icon: Icons.share,
-                    title: 'Share',
-                  ),
+                  
                   ProfileWidget(
                     icon: Icons.logout,
                     title: 'Log Out',

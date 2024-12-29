@@ -9,17 +9,6 @@ import 'package:fypapp/ui/screens/widgets/plant_widget.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
-//Inference history model
-class InferenceHistory {
-  final String dateTime;
-  final String result;
-
-  InferenceHistory({
-    required this.dateTime,
-    required this.result,
-  });
-}
-
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -39,11 +28,6 @@ class _HomePageState extends State<HomePage> {
     'Fungal',
     'Pest',
     'Viral',
-  ];
-
-  // Inference History List (for mock data)
-  List<InferenceHistory> inferenceHistory = [
-    
   ];
 
   // Toggle Favorite button
@@ -71,6 +55,14 @@ class _HomePageState extends State<HomePage> {
     }
 
     return filteredPlants;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetch inference history when the page is loaded
+    Provider.of<InferenceHistoryProvider>(context, listen: false)
+        .fetchInferenceHistory();
   }
 
   @override
@@ -279,7 +271,8 @@ class _HomePageState extends State<HomePage> {
             // Display Inference History
             Consumer<InferenceHistoryProvider>(
               builder: (context, inferenceHistoryProvider, child) {
-                List<Map<String, dynamic>> inferenceHistory = inferenceHistoryProvider.inferenceHistory;
+                List<Map<String, dynamic>> inferenceHistory =
+                    inferenceHistoryProvider.inferenceHistory;
 
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),

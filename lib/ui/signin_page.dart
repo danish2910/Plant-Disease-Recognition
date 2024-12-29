@@ -4,11 +4,53 @@ import 'package:fypapp/ui/root_page.dart';
 import 'package:fypapp/ui/screens/forgot_password.dart';
 import 'package:fypapp/ui/screens/widgets/custom_textfield.dart';
 import 'package:fypapp/ui/signup_page.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:page_transition/page_transition.dart';
 
-class SignIn extends StatelessWidget {
+class SignIn extends StatefulWidget {
   const SignIn({super.key});
+
+  @override
+  _SignInState createState() => _SignInState();
+}
+
+class _SignInState extends State<SignIn> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // Function to handle sign in with email and password
+  void _signIn() async {
+    try {
+      // Attempt to sign in with email and password
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      // If successful, navigate to the RootPage
+      Navigator.pushReplacement(
+        context,
+        PageTransition(
+          child: const RootPage(),
+          type: PageTransitionType.bottomToTop,
+        ),
+      );
+    } catch (e) {
+      // Display error message if sign-in fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,38 +72,29 @@ class SignIn extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              const SizedBox(
-                height: 30,
-              ),
-              const CustomTextfield(
+              const SizedBox(height: 30),
+              CustomTextfield(
+                controller: _emailController,
                 obscureText: false,
                 hintText: 'Enter Email',
                 icon: Icons.alternate_email,
               ),
-              const CustomTextfield(
+              CustomTextfield(
+                controller: _passwordController,
                 obscureText: true,
                 hintText: 'Enter Password',
                 icon: Icons.lock,
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               GestureDetector(
-                onTap: () {
-                  Navigator.pushReplacement(
-                      context,
-                      PageTransition(
-                          child: const RootPage(),
-                          type: PageTransitionType.bottomToTop));
-                },
+                onTap: _signIn,
                 child: Container(
                   width: size.width,
                   decoration: BoxDecoration(
                     color: Constants.primaryColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                   child: const Center(
                     child: Text(
                       'Sign In',
@@ -73,9 +106,7 @@ class SignIn extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
+              const SizedBox(height: 10),
               GestureDetector(
                 onTap: () {
                   Navigator.pushReplacement(
@@ -103,9 +134,7 @@ class SignIn extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
               const Row(
                 children: [
                   Expanded(child: Divider()),
@@ -116,36 +145,8 @@ class SignIn extends StatelessWidget {
                   Expanded(child: Divider()),
                 ],
               ),
-              const SizedBox(
-                height: 20,
-              ),
-              Container(
-                width: size.width,
-                decoration: BoxDecoration(
-                    border: Border.all(color: Constants.primaryColor),
-                    borderRadius: BorderRadius.circular(10)),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SizedBox(
-                      height: 30,
-                      child: Image.asset('assets/images/google.png'),
-                    ),
-                    Text(
-                      'Sign In with Google',
-                      style: TextStyle(
-                        color: Constants.blackColor,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 20,
-              ),
+              const SizedBox(height: 20),
+              
               GestureDetector(
                 onTap: () {
                   Navigator.pushReplacement(
@@ -158,7 +159,7 @@ class SignIn extends StatelessWidget {
                   child: Text.rich(
                     TextSpan(children: [
                       TextSpan(
-                        text: 'New to Planty? ',
+                        text: 'New to SolanumCare? ',
                         style: TextStyle(
                           color: Constants.blackColor,
                         ),
