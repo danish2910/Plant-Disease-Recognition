@@ -12,6 +12,7 @@ import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:fypapp/weather_constants.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:fypapp/models/inference_history_provider.dart';
 
@@ -32,8 +33,8 @@ class _ScanPageState extends State<ScanPage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   bool _isLoading = false;
-  List<Map<String, dynamic>> inferenceHistory =
-      []; // List to store inference history
+  //List<Map<String, dynamic>> inferenceHistory =
+  // []; // List to store inference history
 
   void cleanResult() {
     imagePath = null;
@@ -114,11 +115,12 @@ class _ScanPageState extends State<ScanPage> {
             );
 
             if (matchedPlant != null) {
-              //Add to inference history
-              inferenceHistory.add({
-                'plantName' : matchedPlant.plantName,
-                'confidence' : highestConfidenceEntry.value,
-                'timestamp' : DateTime.now().toString(),
+              // Add to inference history using the provider
+              Provider.of<InferenceHistoryProvider>(context, listen: false)
+                  .addInference({
+                'plantName': matchedPlant.plantName,
+                'confidence': highestConfidenceEntry.value,
+                'timestamp': DateTime.now().toString(),
               });
               // Show plant details in a popup
               showDialog(
