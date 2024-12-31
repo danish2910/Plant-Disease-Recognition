@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fypapp/constants.dart';
 import 'package:fypapp/ui/screens/widgets/custom_textfield.dart';
@@ -27,7 +28,13 @@ class _SignUpState extends State<SignUp> {
         password: _passwordController.text,
       );
 
-      // print("${_emailController.text} +++ ${_passwordController.text}");
+      User? user = userCredential.user;
+      if (user!= null){
+        await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+          'name': _nameController.text.trim(),
+          'email': user.email,
+        });
+      }
 
       // After successful sign-up, navigate to the SignIn page
       Navigator.pushReplacement(
@@ -83,7 +90,7 @@ class _SignUpState extends State<SignUp> {
               CustomTextfield(
                 controller: _nameController,
                 obscureText: false,
-                hintText: 'Enter Full name',
+                hintText: 'Enter name',
                 icon: Icons.person,
               ),
               CustomTextfield(

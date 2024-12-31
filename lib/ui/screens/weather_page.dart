@@ -119,7 +119,7 @@ class _WeatherPageState extends State<WeatherPage> {
         child: Container(
           width: size.width,
           height: size.height,
-          padding: const EdgeInsets.only(top: 70, left: 10, right: 10),
+          padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
           color: _constants.primaryColor.withOpacity(.1),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,

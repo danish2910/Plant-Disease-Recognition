@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             // Search Bar
             Container(
-              padding: const EdgeInsets.only(top: 20, left: 16, right: 16),
+              padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
               child: Row(
                 children: [
                   Expanded(

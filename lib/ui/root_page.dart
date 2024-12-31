@@ -3,7 +3,7 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:fypapp/constants.dart';
 import 'package:fypapp/models/plants.dart';
-import 'package:fypapp/ui/screens/cart_page.dart';
+import 'package:fypapp/ui/screens/feedback_page.dart';
 import 'package:fypapp/ui/screens/weather_page.dart';
 import 'package:fypapp/ui/screens/home_page.dart';
 import 'package:fypapp/ui/screens/profile_page.dart';
@@ -28,7 +28,7 @@ class _RootPageState extends State<RootPage> {
     return [
       const HomePage(),
       WeatherPage(favoritedPlants: favorites,),
-      CartPage(addedToCartPlants: myCart,),
+      FeedbackPage(),
       const ProfilePage(),
     ];
   }
