@@ -1,5 +1,8 @@
 // ignore_for_file: sort_child_properties_last
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fypapp/constants.dart';
 import 'package:fypapp/models/inference_history_provider.dart';
@@ -285,6 +288,7 @@ class _HomePageState extends State<HomePage> {
                         margin: const EdgeInsets.symmetric(vertical: 8),
                         elevation: 3,
                         child: ListTile(
+                          leading: history['image'] != null? Image.memory(base64Decode(history['image'])): history['imagePath'] != null ? Image.file(File(history["imagePath"])) : null,
                           contentPadding: const EdgeInsets.all(16),
                           title: Text(
                             "Inference on ${history['timestamp']}",

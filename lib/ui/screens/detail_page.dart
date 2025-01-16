@@ -12,14 +12,18 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   // Toggle Favorite button
-  bool toggleIsFavorited(bool isFavorited) {
-    return !isFavorited;
-  }
+  // bool toggleIsFavorited(bool isFavorited) {
+  //   return !isFavorited;
+  // }
 
   // Toggle add/remove from cart
-  bool toggleIsSelected(bool isSelected) {
-    return !isSelected;
-  }
+  // bool toggleIsSelected(bool isSelected) {
+  //   return !isSelected;
+  // }
+
+  // Expandable sections states
+  bool isDescriptionExpanded = true;
+  bool isCareTipsExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +34,7 @@ class _DetailPageState extends State<DetailPage> {
         children: [
           // Close and Favorite Buttons
           Positioned(
-            top: 50,
+            top: 20,
             left: 20,
             right: 20,
             child: Row(
@@ -53,43 +57,42 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    debugPrint('favorite');
-                  },
-                  child: Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25),
-                      color: Constants.primaryColor.withOpacity(.15),
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          bool isFavorited = toggleIsFavorited(
-                              _plantList[widget.plantId].isFavorated);
-                          _plantList[widget.plantId].isFavorated =
-                              isFavorited;
-                        });
-                      },
-                      icon: Icon(
-                        _plantList[widget.plantId].isFavorated == true
-                            ? Icons.favorite
-                            : Icons.favorite_border,
-                        color: Constants.primaryColor,
-                      ),
-                    ),
-                  ),
-                ),
+                // GestureDetector(
+                //   onTap: () {
+                //     debugPrint('favorite');
+                //   },
+                //   child: Container(
+                //     height: 40,
+                //     width: 40,
+                //     decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(25),
+                //       color: Constants.primaryColor.withOpacity(.15),
+                //     ),
+                //     child: IconButton(
+                //       onPressed: () {
+                //         setState(() {
+                //           bool isFavorited = toggleIsFavorited(
+                //               _plantList[widget.plantId].isFavorated);
+                //           _plantList[widget.plantId].isFavorated = isFavorited;
+                //         });
+                //       },
+                //       icon: Icon(
+                //         _plantList[widget.plantId].isFavorated == true
+                //             ? Icons.favorite
+                //             : Icons.favorite_border,
+                //         color: Constants.primaryColor,
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
 
           // Image and Features Section
           Positioned(
-            top: 100,
-            left: 20,
+            top: 50,
+            left: 50,
             right: 20,
             child: Container(
               width: size.width * .8,
@@ -137,14 +140,14 @@ class _DetailPageState extends State<DetailPage> {
             ),
           ),
 
-          // Bottom Description Section
+          // Bottom Description Section with Header and Collapsible Panels
           Positioned(
             bottom: 0,
             left: 0,
             right: 0,
             child: Container(
-              padding: const EdgeInsets.only(top: 80, left: 30, right: 30),
-              height: size.height * .5,
+              padding: const EdgeInsets.only(top: 20, left: 30, right: 30),
+              height: size.height * 0.5,
               width: size.width,
               decoration: BoxDecoration(
                 color: Constants.primaryColor.withOpacity(.4),
@@ -153,42 +156,81 @@ class _DetailPageState extends State<DetailPage> {
                   topLeft: Radius.circular(30),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _plantList[widget.plantId].plantName,
-                            style: TextStyle(
-                              color: Constants.primaryColor,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30.0,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 5.0),
-                  Expanded(
-                    child: Text(
-                      _plantList[widget.plantId].description,
-                      textAlign: TextAlign.justify,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Disease Name Header
+                    Text(
+                      _plantList[widget.plantId].plantName, // Replace with disease name
                       style: TextStyle(
-                        height: 1.5,
-                        fontSize: 18,
-                        color: Constants.blackColor.withOpacity(.7),
+                        color: Constants.primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 28.0,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 10), // Spacing below the header
+                    
+                    // Description Section
+                    ExpansionTile(
+                      title: Text(
+                        'Description',
+                        style: TextStyle(
+                          color: Constants.primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      initiallyExpanded: isDescriptionExpanded,
+                      onExpansionChanged: (expanded) {
+                        setState(() {
+                          isDescriptionExpanded = expanded;
+                        });
+                      },
+                      children: [
+                        Text(
+                          _plantList[widget.plantId].description,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            height: 1.5,
+                            fontSize: 18,
+                            color: Constants.blackColor.withOpacity(.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 5),
+
+                    // Care Tips Section
+                    ExpansionTile(
+                      title: Text(
+                        'Care Tips',
+                        style: TextStyle(
+                          color: Constants.primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      initiallyExpanded: isCareTipsExpanded,
+                      onExpansionChanged: (expanded) {
+                        setState(() {
+                          isCareTipsExpanded = expanded;
+                        });
+                      },
+                      children: [
+                        Text(
+                          _plantList[widget.plantId].description,
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                            height: 1.5,
+                            fontSize: 18,
+                            color: Constants.blackColor.withOpacity(.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -196,71 +238,71 @@ class _DetailPageState extends State<DetailPage> {
       ),
 
       // Floating Action Buttons
-      floatingActionButton: SizedBox(
-        width: size.width * .9,
-        height: 50,
-        child: Row(
-          children: [
-            Container(
-              height: 50,
-              width: 50,
-              child: IconButton(
-                onPressed: () {
-                  setState(() {
-                    bool isSelected = toggleIsSelected(
-                        _plantList[widget.plantId].isSelected);
-                    _plantList[widget.plantId].isSelected = isSelected;
-                  });
-                },
-                icon: Icon(
-                  Icons.shopping_cart,
-                  color: _plantList[widget.plantId].isSelected == true
-                      ? Colors.white
-                      : Constants.primaryColor,
-                ),
-              ),
-              decoration: BoxDecoration(
-                color: _plantList[widget.plantId].isSelected == true
-                    ? Constants.primaryColor.withOpacity(.5)
-                    : Colors.white,
-                borderRadius: BorderRadius.circular(50),
-                boxShadow: [
-                  BoxShadow(
-                    offset: const Offset(0, 1),
-                    blurRadius: 5,
-                    color: Constants.primaryColor.withOpacity(.3),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 20),
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Constants.primaryColor,
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      offset: const Offset(0, 1),
-                      blurRadius: 5,
-                      color: Constants.primaryColor.withOpacity(.3),
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Text(
-                    'BUY NOW',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      // floatingActionButton: SizedBox(
+      //   width: size.width * .9,
+      //   height: 50,
+      //   child: Row(
+      //     children: [
+      //       Container(
+      //         height: 50,
+      //         width: 50,
+      //         child: IconButton(
+      //           onPressed: () {
+      //             setState(() {
+      //               bool isSelected = toggleIsSelected(
+      //                   _plantList[widget.plantId].isSelected);
+      //               _plantList[widget.plantId].isSelected = isSelected;
+      //             });
+      //           },
+      //           icon: Icon(
+      //             Icons.shopping_cart,
+      //             color: _plantList[widget.plantId].isSelected == true
+      //                 ? Colors.white
+      //                 : Constants.primaryColor,
+      //           ),
+      //         ),
+      //         decoration: BoxDecoration(
+      //           color: _plantList[widget.plantId].isSelected == true
+      //               ? Constants.primaryColor.withOpacity(.5)
+      //               : Colors.white,
+      //           borderRadius: BorderRadius.circular(50),
+      //           boxShadow: [
+      //             BoxShadow(
+      //               offset: const Offset(0, 1),
+      //               blurRadius: 5,
+      //               color: Constants.primaryColor.withOpacity(.3),
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      //       const SizedBox(width: 20),
+      //       // Expanded(
+      //       //   child: Container(
+      //       //     decoration: BoxDecoration(
+      //       //       color: Constants.primaryColor,
+      //       //       borderRadius: BorderRadius.circular(10),
+      //       //       boxShadow: [
+      //       //         BoxShadow(
+      //       //           offset: const Offset(0, 1),
+      //       //           blurRadius: 5,
+      //       //           color: Constants.primaryColor.withOpacity(.3),
+      //       //         ),
+      //       //       ],
+      //       //     ),
+      //       //     child: const Center(
+      //       //       child: Text(
+      //       //         'BUY NOW',
+      //       //         style: TextStyle(
+      //       //           color: Colors.white,
+      //       //           fontSize: 20.0,
+      //       //         ),
+      //       //       ),
+      //       //     ),
+      //       //   ),
+      //       // ),
+      //     ],
+      //   ),
+      // ),
     );
   }
 }

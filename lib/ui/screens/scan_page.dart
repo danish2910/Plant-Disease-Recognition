@@ -121,6 +121,7 @@ class _ScanPageState extends State<ScanPage> {
                 'plantName': matchedPlant.plantName,
                 'confidence': highestConfidenceEntry.value,
                 'timestamp': DateTime.now().toString(),
+                "imagePath": imagePath!
               });
               // Show plant details in a popup
               showDialog(
