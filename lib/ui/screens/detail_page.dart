@@ -57,34 +57,6 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                   ),
                 ),
-                // GestureDetector(
-                //   onTap: () {
-                //     debugPrint('favorite');
-                //   },
-                //   child: Container(
-                //     height: 40,
-                //     width: 40,
-                //     decoration: BoxDecoration(
-                //       borderRadius: BorderRadius.circular(25),
-                //       color: Constants.primaryColor.withOpacity(.15),
-                //     ),
-                //     child: IconButton(
-                //       onPressed: () {
-                //         setState(() {
-                //           bool isFavorited = toggleIsFavorited(
-                //               _plantList[widget.plantId].isFavorated);
-                //           _plantList[widget.plantId].isFavorated = isFavorited;
-                //         });
-                //       },
-                //       icon: Icon(
-                //         _plantList[widget.plantId].isFavorated == true
-                //             ? Icons.favorite
-                //             : Icons.favorite_border,
-                //         color: Constants.primaryColor,
-                //       ),
-                //     ),
-                //   ),
-                // ),
               ],
             ),
           ),
@@ -169,7 +141,7 @@ class _DetailPageState extends State<DetailPage> {
                         fontSize: 28.0,
                       ),
                     ),
-                    const SizedBox(height: 10), // Spacing below the header
+                    const SizedBox(height: 5), // Spacing below the header
                     
                     // Description Section
                     ExpansionTile(
@@ -204,7 +176,7 @@ class _DetailPageState extends State<DetailPage> {
                     // Care Tips Section
                     ExpansionTile(
                       title: Text(
-                        'Care Tips',
+                        'Disease Management',
                         style: TextStyle(
                           color: Constants.primaryColor,
                           fontWeight: FontWeight.bold,
@@ -219,7 +191,7 @@ class _DetailPageState extends State<DetailPage> {
                       },
                       children: [
                         Text(
-                          _plantList[widget.plantId].description,
+                          _plantList[widget.plantId].careTips,
                           textAlign: TextAlign.justify,
                           style: TextStyle(
                             height: 1.5,
@@ -236,73 +208,6 @@ class _DetailPageState extends State<DetailPage> {
           ),
         ],
       ),
-
-      // Floating Action Buttons
-      // floatingActionButton: SizedBox(
-      //   width: size.width * .9,
-      //   height: 50,
-      //   child: Row(
-      //     children: [
-      //       Container(
-      //         height: 50,
-      //         width: 50,
-      //         child: IconButton(
-      //           onPressed: () {
-      //             setState(() {
-      //               bool isSelected = toggleIsSelected(
-      //                   _plantList[widget.plantId].isSelected);
-      //               _plantList[widget.plantId].isSelected = isSelected;
-      //             });
-      //           },
-      //           icon: Icon(
-      //             Icons.shopping_cart,
-      //             color: _plantList[widget.plantId].isSelected == true
-      //                 ? Colors.white
-      //                 : Constants.primaryColor,
-      //           ),
-      //         ),
-      //         decoration: BoxDecoration(
-      //           color: _plantList[widget.plantId].isSelected == true
-      //               ? Constants.primaryColor.withOpacity(.5)
-      //               : Colors.white,
-      //           borderRadius: BorderRadius.circular(50),
-      //           boxShadow: [
-      //             BoxShadow(
-      //               offset: const Offset(0, 1),
-      //               blurRadius: 5,
-      //               color: Constants.primaryColor.withOpacity(.3),
-      //             ),
-      //           ],
-      //         ),
-      //       ),
-      //       const SizedBox(width: 20),
-      //       // Expanded(
-      //       //   child: Container(
-      //       //     decoration: BoxDecoration(
-      //       //       color: Constants.primaryColor,
-      //       //       borderRadius: BorderRadius.circular(10),
-      //       //       boxShadow: [
-      //       //         BoxShadow(
-      //       //           offset: const Offset(0, 1),
-      //       //           blurRadius: 5,
-      //       //           color: Constants.primaryColor.withOpacity(.3),
-      //       //         ),
-      //       //       ],
-      //       //     ),
-      //       //     child: const Center(
-      //       //       child: Text(
-      //       //         'BUY NOW',
-      //       //         style: TextStyle(
-      //       //           color: Colors.white,
-      //       //           fontSize: 20.0,
-      //       //         ),
-      //       //       ),
-      //       //     ),
-      //       //   ),
-      //       // ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }

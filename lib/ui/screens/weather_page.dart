@@ -14,8 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class WeatherPage extends StatefulWidget {
-  final List<Plant> favoritedPlants;
-  const WeatherPage({Key? key, required this.favoritedPlants})
+  const WeatherPage({Key? key})
       : super(key: key);
 
   @override

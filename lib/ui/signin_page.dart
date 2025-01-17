@@ -37,11 +37,25 @@ class _SignInState extends State<SignIn> {
           type: PageTransitionType.bottomToTop,
         ),
       );
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       // Display error message if sign-in fails
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString())),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(content: Text(e.toString())),
+      // )
+      if (e.code == 'invalid-credential') {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text("Sign-In Error"),
+            content: Text("E-mail or password is incorrect."),
+            actions: [
+              TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("OK")),
+            ],
+          ),
+        );
+      }
     }
   }
 
@@ -94,7 +108,8 @@ class _SignInState extends State<SignIn> {
                     color: Constants.primaryColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                   child: const Center(
                     child: Text(
                       'Sign In',
@@ -146,7 +161,6 @@ class _SignInState extends State<SignIn> {
                 ],
               ),
               const SizedBox(height: 20),
-              
               GestureDetector(
                 onTap: () {
                   Navigator.pushReplacement(

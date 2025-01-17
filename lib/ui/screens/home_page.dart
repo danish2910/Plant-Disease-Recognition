@@ -3,12 +3,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fypapp/constants.dart';
 import 'package:fypapp/models/inference_history_provider.dart';
 import 'package:fypapp/models/plants.dart';
 import 'package:fypapp/ui/screens/detail_page.dart';
-import 'package:fypapp/ui/screens/widgets/plant_widget.dart';
+import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
 
@@ -66,6 +67,40 @@ class _HomePageState extends State<HomePage> {
     // Fetch inference history when the page is loaded
     Provider.of<InferenceHistoryProvider>(context, listen: false)
         .fetchInferenceHistory();
+  }
+
+  Widget buildImage(BuildContext context, String? imageBase64,
+      String? imagePath, Timestamp timestamp, Map<String, dynamic> history) {
+    Widget imageWidget;
+
+    if (imageBase64 != null) {
+      imageWidget = Image.memory(base64Decode(imageBase64));
+    } else if (imagePath != null) {
+      imageWidget = Image.file(File(imagePath));
+    } else {
+      return SizedBox.shrink(); // Return empty widget if no image
+    }
+
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => Scaffold(
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Hero(
+                tag: timestamp,
+                child: imageWidget,
+              ),
+              Text(history["plantName"]),
+            ],
+          ),
+        ),
+      )),
+      child: Hero(
+        tag: timestamp,
+        child: imageWidget,
+      ),
+    );
   }
 
   @override
@@ -179,35 +214,35 @@ class _HomePageState extends State<HomePage> {
                       margin: const EdgeInsets.symmetric(horizontal: 10),
                       child: Stack(
                         children: [
-                          Positioned(
-                            top: 10,
-                            right: 20,
-                            child: Container(
-                              height: 50,
-                              width: 50,
-                              child: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    bool isFavorited = toggleIsFavorated(
-                                        filteredPlants[index].isFavorated);
-                                    filteredPlants[index].isFavorated =
-                                        isFavorited;
-                                  });
-                                },
-                                icon: Icon(
-                                  filteredPlants[index].isFavorated == true
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                  color: Constants.primaryColor,
-                                ),
-                                iconSize: 30,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(50),
-                              ),
-                            ),
-                          ),
+                          // Positioned(
+                          //   top: 10,
+                          //   right: 20,
+                          //   child: Container(
+                          //     height: 50,
+                          //     width: 50,
+                          //     child: IconButton(
+                          //       onPressed: () {
+                          //         setState(() {
+                          //           bool isFavorited = toggleIsFavorated(
+                          //               filteredPlants[index].isFavorated);
+                          //           filteredPlants[index].isFavorated =
+                          //               isFavorited;
+                          //         });
+                          //       },
+                          //       icon: Icon(
+                          //         filteredPlants[index].isFavorated == true
+                          //             ? Icons.favorite
+                          //             : Icons.favorite_border,
+                          //         color: Constants.primaryColor,
+                          //       ),
+                          //       iconSize: 30,
+                          //     ),
+                          //     decoration: BoxDecoration(
+                          //       color: Colors.white,
+                          //       borderRadius: BorderRadius.circular(50),
+                          //     ),
+                          //   ),
+                          // ),
                           Positioned(
                             left: 30, // Adjust as needed for positioning
                             right: 30, // Adjust as needed for positioning
@@ -276,6 +311,17 @@ class _HomePageState extends State<HomePage> {
               builder: (context, inferenceHistoryProvider, child) {
                 List<Map<String, dynamic>> inferenceHistory =
                     inferenceHistoryProvider.inferenceHistory;
+                // DateTime parseCustomTimestamp(String timestamp) {
+                //   // Define the format of the timestamp string
+                //   DateFormat customFormat =
+                //       DateFormat("d MMMM yyyy 'at' HH:mm:ss 'UTC'Z");
+
+                //   // Remove the " UTC+8" part from the string
+                //   timestamp = timestamp.replaceAll(RegExp(r' UTC.*'), ' UTC+0');
+
+                //   // Parse the timestamp string into a DateTime object
+                //   return customFormat.parse(timestamp);
+                // }
 
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -284,14 +330,32 @@ class _HomePageState extends State<HomePage> {
                     itemCount: inferenceHistory.length,
                     itemBuilder: (BuildContext context, int index) {
                       var history = inferenceHistory[index];
+
+                      // Check if the timestamp is of type Firestore Timestamp
+                      DateTime takeTime;
+                      if (history['timestamp'] is Timestamp) {
+                        // Convert Firestore Timestamp to DateTime
+                        takeTime = (history['timestamp'] as Timestamp).toDate();
+                      } else {
+                        // If timestamp is already a string (parse the string into DateTime)
+                        takeTime =
+                            DateTime.parse(history['timestamp'].toString());
+                      }
+
                       return Card(
                         margin: const EdgeInsets.symmetric(vertical: 8),
                         elevation: 3,
                         child: ListTile(
-                          leading: history['image'] != null? Image.memory(base64Decode(history['image'])): history['imagePath'] != null ? Image.file(File(history["imagePath"])) : null,
+                          leading: buildImage(
+                            context,
+                            history['image'], // image in base64 format
+                            history['imagePath'], // image from file path
+                            history["timestamp"] is String ?  Timestamp.fromDate(DateTime.parse(history["timestamp"])) : history["timestamp"], // unique tag for Hero
+                            history,
+                          ),
                           contentPadding: const EdgeInsets.all(16),
                           title: Text(
-                            "Inference on ${history['timestamp']}",
+                            "Inference on ${DateFormat("h:m:s a, d MMM yyyy").format(takeTime)}",
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                             ),

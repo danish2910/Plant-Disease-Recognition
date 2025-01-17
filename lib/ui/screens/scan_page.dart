@@ -33,8 +33,6 @@ class _ScanPageState extends State<ScanPage> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   bool _isLoading = false;
-  //List<Map<String, dynamic>> inferenceHistory =
-  // []; // List to store inference history
 
   void cleanResult() {
     imagePath = null;
@@ -53,52 +51,32 @@ class _ScanPageState extends State<ScanPage> {
     }
   }
 
-  // Process picked image
   Future<int> processImage() async {
-    // returns -1 if API is inaccessible
-    // returns 0 if api returns result
     if (imagePath != null) {
-      // Step 2: Create a multipart request using the correct key name expected by the server
       var uri = Uri.parse(
           'https://danish.muniza.fyi/infer/'); // Replace with your API URL
       var request =
           http.MultipartRequest('POST', uri); // Assuming the method is POST
-      // Step 3: Add the image to the request with the correct key name
-      // If the API expects the key 'image', use that here.
       var imageFile = await http.MultipartFile.fromPath(
           'image', imagePath!); // 'image' is the key here
       request.files.add(imageFile);
-      // request.headers["X-API-KEY"] = "myapp_key";
 
-      // Step 4: Send the request
       try {
         var streamedResponse = await request.send();
 
-        // Step 5: Check the response status code
         if (streamedResponse.statusCode == 200) {
-          // Step 6: Read the response body
           var responseBody = await streamedResponse.stream.bytesToString();
 
-          // Parse the response body to a Map<String, dynamic>
           Map<String, dynamic> responseMap = jsonDecode(responseBody);
-
-          // Extract the predictions list from the response
           var predictions = responseMap['predictions'];
 
-          // Check if predictions is not empty and is a list of lists
-          if (predictions != null &&
-              predictions is List &&
-              predictions.isNotEmpty) {
-            // Flatten the predictions (the inner list is a single list of numbers)
+          if (predictions != null && predictions is List && predictions.isNotEmpty) {
             List<double> predictionValues = List<double>.from(predictions[0]);
-
             classification = await getSortedPredictionMap(predictionValues);
 
-            //Get highest confidence
             var highestConfidenceEntry = classification!.entries.first;
-            Plant matchedPlant = Plant.plantList.firstWhere(
-              (plant) => plant.key == highestConfidenceEntry.key,
-              orElse: () => Plant(
+            if (highestConfidenceEntry.value < 0.8) {
+              Plant matchedPlant = Plant(
                 key: 'Unknown',
                 plantId: -1,
                 category: 'Unknown',
@@ -108,13 +86,12 @@ class _ScanPageState extends State<ScanPage> {
                 severity: "Unknown",
                 temperature: 'N/A',
                 imageURL: 'assets/images/unknown.png',
-                isFavorated: false,
+                // isFavorated: false,
                 description: 'No description available',
-                isSelected: false,
-              ),
-            );
+                careTips:'',
+                // isSelected: false,
+              );
 
-            if (matchedPlant != null) {
               // Add to inference history using the provider
               Provider.of<InferenceHistoryProvider>(context, listen: false)
                   .addInference({
@@ -123,7 +100,64 @@ class _ScanPageState extends State<ScanPage> {
                 'timestamp': DateTime.now().toString(),
                 "imagePath": imagePath!
               });
-              // Show plant details in a popup
+
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(matchedPlant.plantName),
+                  content: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('Type: ${matchedPlant.type}'),
+                      Text('Severity: ${matchedPlant.severity}'),
+                      Text('Temperature: ${matchedPlant.temperature}'),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Description:',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(matchedPlant.description),
+                    ],
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+
+            } else {
+              Plant matchedPlant = Plant.plantList.firstWhere(
+                (plant) => plant.key == highestConfidenceEntry.key,
+                orElse: () => Plant(
+                  key: 'Unknown',
+                  plantId: -1,
+                  category: 'Unknown',
+                  plantName: 'Unknown Plant',
+                  type: 'Unknown Type',
+                  rating: 0.0,
+                  severity: "Unknown",
+                  temperature: 'N/A',
+                  imageURL: 'assets/images/unknown.png',
+                  // isFavorated: false,
+                  description: 'No description available',
+                  careTips:'',
+                  // isSelected: false,
+                ),
+              );
+
+              // Add to inference history using the provider
+              Provider.of<InferenceHistoryProvider>(context, listen: false)
+                  .addInference({
+                'plantName': matchedPlant.plantName,
+                'confidence': highestConfidenceEntry.value,
+                'timestamp': DateTime.now().toString(),
+                "imagePath": imagePath!
+              });
+
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
@@ -159,7 +193,6 @@ class _ScanPageState extends State<ScanPage> {
           return -1;
         }
       } catch (e) {
-        // Catch any errors that might occur during the request
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
@@ -174,8 +207,6 @@ class _ScanPageState extends State<ScanPage> {
   @override
   void initState() {
     super.initState();
-
-    // Initialize the camera controller if cameras are available
     if (cameraIsAvailable) {
       _initializeControllerFuture = _initializeCamera();
     }
@@ -183,19 +214,12 @@ class _ScanPageState extends State<ScanPage> {
 
   Future<void> _initializeCamera() async {
     try {
-      // Get the list of available cameras
       cameraList = await availableCameras();
-
-      // Use the first available camera
       final cameraUsed = cameraList.first;
-
-      // Create the camera controller
       _controller = CameraController(
         cameraUsed,
         ResolutionPreset.medium,
       );
-
-      // Initialize the controller
       await _controller.initialize();
     } catch (e) {
       debugPrint("Error initializing camera: $e");
@@ -204,41 +228,28 @@ class _ScanPageState extends State<ScanPage> {
 
   @override
   void dispose() {
-    // Dispose of the camera controller if initialized
     if (cameraIsAvailable) {
       _controller.dispose();
     }
     super.dispose();
   }
 
-  // Function to get the sorted prediction map based on prediction values
-
-  Future<Map<String, double>> getSortedPredictionMap(
-      List<double> predictionValues) async {
-    // Load labels from the assets/labels.txt file using rootBundle
+  Future<Map<String, double>> getSortedPredictionMap(List<double> predictionValues) async {
     String labelsContent = await rootBundle.loadString('assets/labels.txt');
-
-    // Split the content by lines to get the individual labels
     List<String> labels = LineSplitter.split(labelsContent).toList();
 
-    // Create a map with label as the key and the corresponding prediction value as the value
     Map<String, double> predictionMap = {};
-
-    // Check if the number of labels matches the number of prediction values
     if (labels.length == predictionValues.length) {
       for (int i = 0; i < predictionValues.length; i++) {
         predictionMap[labels[i]] = predictionValues[i];
       }
     } else {
-      throw Exception(
-          'The number of labels does not match the number of prediction values.');
+      throw Exception('The number of labels does not match the number of prediction values.');
     }
 
-    // Sort the map by the prediction value in descending order
     var sortedPredictionMap = Map.fromEntries(
       predictionMap.entries.toList()
-        ..sort((e1, e2) =>
-            e2.value.compareTo(e1.value)), // Sorting in descending order
+        ..sort((e1, e2) => e2.value.compareTo(e1.value)),
     );
 
     return sortedPredictionMap;
@@ -254,13 +265,11 @@ class _ScanPageState extends State<ScanPage> {
       child: Stack(
         children: [
           Container(
-            decoration: BoxDecoration(gradient: Constants().linearGradientBlue),
+            decoration: BoxDecoration(/*gradient: Constants().linearGradientBlue*/color: Colors.white),
             child: FutureBuilder<void>(
               future: _initializeControllerFuture,
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done &&
-                    _controller.value.isInitialized) {
-                  // Camera initialized, show the preview
+                if (snapshot.connectionState == ConnectionState.done && _controller.value.isInitialized) {
                   return AnimatedSwitcher(
                     duration: const Duration(milliseconds: 500),
                     transitionBuilder: (child, animation) {
@@ -270,7 +279,6 @@ class _ScanPageState extends State<ScanPage> {
                       children: [
                         Stack(
                           children: [
-                            // Camera Preview with border radius
                             Padding(
                               padding: const EdgeInsets.all(20.0),
                               child: ClipRRect(
@@ -278,38 +286,6 @@ class _ScanPageState extends State<ScanPage> {
                                 child: CameraPreview(_controller),
                               ),
                             ),
-
-                            // Positioned widget for centered text at the top
-                            // Opacity(
-                            //   opacity: 0.7,
-                            //   child: Padding(
-                            //     padding: const EdgeInsets.only(top: 20),
-                            //     child: Align(
-                            //       alignment: Alignment.topCenter,
-                            //       // Align to the right of the Stack
-                            //       child: Padding(
-                            //         padding: const EdgeInsets.all(8.0),
-                            //         child: Container(
-                            //           decoration: BoxDecoration(
-                            //             borderRadius: BorderRadius.circular(5),
-                            //             gradient: Constants().linearGradientPurple,
-                            //           ),
-                            //           child: const Padding(
-                            //             padding: EdgeInsets.all(8.0),
-                            //             child: Text(
-                            //               "Align the food within camera view.",
-                            //               textAlign: TextAlign
-                            //                   .center, // Center text inside the container
-                            //               style: TextStyle(
-                            //                 color: Colors.white,
-                            //               ),
-                            //             ),
-                            //           ),
-                            //         ),
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
                           ],
                         ),
                         Expanded(
@@ -331,7 +307,7 @@ class _ScanPageState extends State<ScanPage> {
                                     showDialog(
                                       context: context,
                                       builder: (context) => AlertDialog(
-                                        content: Text("It failed"),
+                                        content: Text("Check your internet connection and try again."),
                                       ),
                                     );
                                     return;
@@ -351,8 +327,7 @@ class _ScanPageState extends State<ScanPage> {
                                     setState(() {
                                       _isLoading = true;
                                     });
-                                    final result = await imagePicker.pickImage(
-                                        source: ImageSource.gallery);
+                                    final result = await imagePicker.pickImage(source: ImageSource.gallery);
                                     imagePath = result?.path;
                                     var res = await processImage();
                                     print(classification);
@@ -363,14 +338,13 @@ class _ScanPageState extends State<ScanPage> {
                                       showDialog(
                                         context: context,
                                         builder: (context) => AlertDialog(
-                                          content: Text("It failed"),
+                                          content: Text("Check your internet connection and try again."),
                                         ),
                                       );
                                       return;
                                     }
                                   },
-                                  child:
-                                      const Text("Choose image from gallery"))
+                                  child: const Text("Choose image from gallery"))
                             ],
                           ),
                         )
@@ -380,7 +354,6 @@ class _ScanPageState extends State<ScanPage> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text("Error: ${snapshot.error}"));
                 } else {
-                  // Loading state
                   return const Center(child: CircularProgressIndicator());
                 }
               },
@@ -397,6 +370,7 @@ class _ScanPageState extends State<ScanPage> {
                         child: const Center(
                           child: CircularProgressIndicator(),
                         )),
+
                   )
                 : const SizedBox(),
           ))
