@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fypapp/constants.dart';
-import 'package:fypapp/models/plants.dart';
+import 'package:fypapp/models/diseases.dart';
 
 class DetailPage extends StatefulWidget {
-  final int plantId;
-  const DetailPage({Key? key, required this.plantId}) : super(key: key);
+  final int diseaseId;
+  const DetailPage({Key? key, required this.diseaseId}) : super(key: key);
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -18,7 +18,7 @@ class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    List<Plant> _plantList = Plant.plantList;
+    List<Disease> _diseaseList = Disease.diseaseList;
     return Scaffold(
       body: Stack(
         children: [
@@ -67,32 +67,32 @@ class _DetailPageState extends State<DetailPage> {
                   Expanded(
                     flex: 1,
                     child: Image.asset(
-                      _plantList[widget.plantId].imageURL,
+                      _diseaseList[widget.diseaseId].imageURL,
                       fit: BoxFit.contain, // Ensures the image scales nicely
                       height: 250, // Adjust height to constrain the image
                     ),
                   ),
                   const SizedBox(width: 20), // Add horizontal spacing between image and features
-                  // Plant Features Section
+                  // Disease Features Section
                   Expanded(
                     flex: 1,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        PlantFeature(
+                        DiseaseFeature(
                           title: 'Type',
-                          plantFeature: _plantList[widget.plantId].type,
+                          diseaseFeature: _diseaseList[widget.diseaseId].type,
                         ),
                         const SizedBox(height: 10), // Add spacing between features
-                        PlantFeature(
+                        DiseaseFeature(
                           title: 'Severity',
-                          plantFeature: _plantList[widget.plantId].severity,
+                          diseaseFeature: _diseaseList[widget.diseaseId].severity,
                         ),
                         const SizedBox(height: 10), // Add spacing between features
-                        PlantFeature(
+                        DiseaseFeature(
                           title: 'Temperature',
-                          plantFeature: _plantList[widget.plantId].temperature,
+                          diseaseFeature: _diseaseList[widget.diseaseId].temperature,
                         ),
                       ],
                     ),
@@ -124,7 +124,7 @@ class _DetailPageState extends State<DetailPage> {
                   children: [
                     // Disease Name Header
                     Text(
-                      _plantList[widget.plantId].plantName, // Replace with disease name
+                      _diseaseList[widget.diseaseId].diseaseName, // Replace with disease name
                       style: TextStyle(
                         color: Constants.primaryColor,
                         fontWeight: FontWeight.bold,
@@ -151,7 +151,7 @@ class _DetailPageState extends State<DetailPage> {
                       },
                       children: [
                         Text(
-                          _plantList[widget.plantId].description,
+                          _diseaseList[widget.diseaseId].description,
                           textAlign: TextAlign.justify,
                           style: TextStyle(
                             height: 1.5,
@@ -181,7 +181,7 @@ class _DetailPageState extends State<DetailPage> {
                       },
                       children: [
                         Text(
-                          _plantList[widget.plantId].careTips,
+                          _diseaseList[widget.diseaseId].careTips,
                           textAlign: TextAlign.justify,
                           style: TextStyle(
                             height: 1.5,
@@ -202,13 +202,13 @@ class _DetailPageState extends State<DetailPage> {
   }
 }
 
-// PlantFeature Widget
-class PlantFeature extends StatelessWidget {
-  final String plantFeature;
+// DiseaseFeature Widget
+class DiseaseFeature extends StatelessWidget {
+  final String diseaseFeature;
   final String title;
-  const PlantFeature({
+  const DiseaseFeature({
     Key? key,
-    required this.plantFeature,
+    required this.diseaseFeature,
     required this.title,
   }) : super(key: key);
 
@@ -224,7 +224,7 @@ class PlantFeature extends StatelessWidget {
           ),
         ),
         Text(
-          plantFeature,
+          diseaseFeature,
           style: TextStyle(
             color: Constants.primaryColor,
             fontSize: 18.0,

@@ -7,7 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fypapp/constants.dart';
 import 'package:fypapp/models/inference_history_provider.dart';
-import 'package:fypapp/models/plants.dart';
+import 'package:fypapp/models/diseases.dart';
 import 'package:fypapp/ui/screens/detail_page.dart';
 import 'package:intl/intl.dart';
 import 'package:page_transition/page_transition.dart';
@@ -22,11 +22,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = 0; // Keeps track of selected category
-  List<Plant> _plantList = Plant.plantList;
+  List<Disease> _diseaseList = Disease.diseaseList;
   String searchQuery = ""; // Tracks search input
 
-  // Plants categories
-  List<String> _plantTypes = [
+  // Diseases categories
+  List<String> _diseaseTypes = [
     'All',
     'Bacterial',
     'Fungal',
@@ -39,26 +39,25 @@ class _HomePageState extends State<HomePage> {
     return !isFavorited;
   }
 
-  // Filter the plants based on selected category and search query
-  List<Plant> _getFilteredPlants() {
-    List<Plant> filteredPlants;
+  // Filter the diseases based on selected category and search query
+  List<Disease> _getFilteredDiseases() {
+    List<Disease> filteredDiseases;
     if (selectedIndex == 0) {
-      filteredPlants = _plantList; // Show all plants for 'All'
+      filteredDiseases = _diseaseList; // Show all diseases for 'All'
     } else {
-      String selectedCategory = _plantTypes[selectedIndex];
-      filteredPlants = _plantList
-          .where((plant) => plant.category == selectedCategory)
+      String selectedCategory = _diseaseTypes[selectedIndex];
+      filteredDiseases = _diseaseList
+          .where((disease) => disease.category == selectedCategory)
           .toList();
     }
 
     if (searchQuery.isNotEmpty) {
-      filteredPlants = filteredPlants
-          .where((plant) =>
-              plant.plantName.toLowerCase().contains(searchQuery.toLowerCase()))
+      filteredDiseases = filteredDiseases
+          .where((disease) =>
+              disease.diseaseName.toLowerCase().contains(searchQuery.toLowerCase()))
           .toList();
     }
-
-    return filteredPlants;
+    return filteredDiseases;
   }
 
   @override
@@ -100,7 +99,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 height: 10,
               ),
-              Text(history["plantName"],
+              Text(history["diseaseName"],
                   style: TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
@@ -160,7 +159,7 @@ class _HomePageState extends State<HomePage> {
               width: size.width,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                itemCount: _plantTypes.length,
+                itemCount: _diseaseTypes.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -183,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                         child: Center(
                           child: Text(
-                            _plantTypes[index],
+                            _diseaseTypes[index],
                             style: TextStyle(
                               fontSize: 16.0,
                               fontWeight: FontWeight.bold,
@@ -199,21 +198,21 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
             ),
-            // Horizontal List of Plants
+            // Horizontal List of Diseases
             SizedBox(
               height: size.height * .3,
               child: ListView.builder(
-                itemCount: _getFilteredPlants().length,
+                itemCount: _getFilteredDiseases().length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (BuildContext context, int index) {
-                  List<Plant> filteredPlants = _getFilteredPlants();
+                  List<Disease> filteredDiseases = _getFilteredDiseases();
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
                         context,
                         PageTransition(
                           child: DetailPage(
-                            plantId: filteredPlants[index].plantId,
+                            diseaseId: filteredDiseases[index].diseaseId,
                           ),
                           type: PageTransitionType.bottomToTop,
                         ),
@@ -238,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                               padding: const EdgeInsets.all(
                                   5), // Adjust padding for image size
                               child:
-                                  Image.asset(filteredPlants[index].imageURL),
+                                  Image.asset(filteredDiseases[index].imageURL),
                             ),
                           ),
                           Positioned(
@@ -248,14 +247,14 @@ class _HomePageState extends State<HomePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  filteredPlants[index].category,
+                                  filteredDiseases[index].category,
                                   style: const TextStyle(
                                     color: Colors.white70,
                                     fontSize: 16,
                                   ),
                                 ),
                                 Text(
-                                  filteredPlants[index].plantName,
+                                  filteredDiseases[index].diseaseName,
                                   style: const TextStyle(
                                     color: Colors.white70,
                                     fontSize: 15,
@@ -334,7 +333,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           subtitle: Text(
-                            history['plantName'].toString(),
+                            history['diseaseName'].toString(),
                             style: const TextStyle(color: Colors.black54),
                           ),
                         ),

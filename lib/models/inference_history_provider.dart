@@ -63,7 +63,7 @@ class InferenceHistoryProvider with ChangeNotifier {
             .collection('history')
             .add({
           'timestamp': FieldValue.serverTimestamp(),
-          'plantName': inference['plantName'],
+          'diseaseName': inference['diseaseName'],
           'result': inference['result'],
           "image": base64Encode(File(inference['imagePath']).readAsBytesSync()),
         });

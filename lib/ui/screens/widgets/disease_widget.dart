@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:fypapp/constants.dart';
-import 'package:fypapp/models/plants.dart';
+import 'package:fypapp/models/diseases.dart';
 import 'package:fypapp/ui/screens/detail_page.dart';
 import 'package:page_transition/page_transition.dart';
 
 
 
-class PlantWidget extends StatelessWidget {
-  const PlantWidget({
-    super.key, required this.index, required this.plantList,
+class DiseaseWidget extends StatelessWidget {
+  const DiseaseWidget({
+    super.key, required this.index, required this.diseaseList,
 
   });
 
   final int index;
-  final List<Plant> plantList;
+  final List<Disease> diseaseList;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class PlantWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.push(context, PageTransition(child: DetailPage(
-          plantId: plantList[index].plantId,
+          diseaseId: diseaseList[index].diseaseId,
         ), type: PageTransitionType.bottomToTop));
       },
       child: Container(
@@ -55,7 +55,7 @@ class PlantWidget extends StatelessWidget {
                     right: 0,
                     child: SizedBox(
                       height: 80.0,
-                      child: Image.asset(plantList[index].imageURL),
+                      child: Image.asset(diseaseList[index].imageURL),
                     ),),
                 Positioned(
                   bottom: 5,
@@ -63,8 +63,8 @@ class PlantWidget extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(plantList[index].category),
-                        Text(plantList[index].plantName, style: TextStyle(
+                        Text(diseaseList[index].category),
+                        Text(diseaseList[index].diseaseName, style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                           color: Constants.blackColor,

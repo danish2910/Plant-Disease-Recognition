@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:fypapp/models/plants.dart';
+import 'package:fypapp/models/diseases.dart';
 import 'package:fypapp/ui/screens/weather_detail_page.dart';
 import 'package:fypapp/ui/screens/widgets/weather_item.dart';
 import 'package:fypapp/weather_constants.dart';

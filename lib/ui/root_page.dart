@@ -2,7 +2,7 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:fypapp/constants.dart';
-import 'package:fypapp/models/plants.dart';
+import 'package:fypapp/models/diseases.dart';
 import 'package:fypapp/ui/screens/feedback_page.dart';
 import 'package:fypapp/ui/screens/weather_page.dart';
 import 'package:fypapp/ui/screens/home_page.dart';
@@ -18,9 +18,6 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
-  // List<Plant> favorites = [];
-  // List<Plant> myCart = [];
-
   int _bottomNavIndex = 0;
 
   //List of the pages

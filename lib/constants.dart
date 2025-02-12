@@ -11,6 +11,4 @@ class Constants {
   static var descriptionOne = "Identify diseases, monitor environmental factors, and improve your yield effortlessly.";
   static var titleTwo = "Snap a picture, get results!";
   static var descriptionTwo = "Identify tomato diseases with our powerful deep learning model in seconds.";
-  // static var titleThree = "Plant a tree, green the Earth";
-  // static var descriptionThree = "Find almost all types of plants that you like here.";
 }

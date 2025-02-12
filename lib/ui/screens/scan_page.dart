@@ -7,7 +7,7 @@ import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fypapp/models/plants.dart';
+import 'package:fypapp/models/diseases.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -77,26 +77,23 @@ class _ScanPageState extends State<ScanPage> {
 
             var highestConfidenceEntry = classification!.entries.first;
             if (highestConfidenceEntry.value < 0.6) {
-              Plant matchedPlant = Plant(
+              Disease matchedDisease = Disease(
                 key: 'Unknown',
-                plantId: -1,
+                diseaseId: -1,
                 category: 'Unknown',
-                plantName: 'Unknown Disease',
+                diseaseName: 'Unknown Disease',
                 type: 'Unknown Type',
-                rating: 0.0,
                 severity: "Unknown",
                 temperature: 'N/A',
                 imageURL: 'assets/images/unknown.png',
-                // isFavorated: false,
                 description: 'No description available',
                 careTips:'',
-                // isSelected: false,
               );
 
               // Add to inference history using the provider
               Provider.of<InferenceHistoryProvider>(context, listen: false)
                   .addInference({
-                'plantName': matchedPlant.plantName,
+                'diseaseName': matchedDisease.diseaseName,
                 'confidence': highestConfidenceEntry.value,
                 'timestamp': DateTime.now().toString(),
                 "imagePath": imagePath!
@@ -105,20 +102,20 @@ class _ScanPageState extends State<ScanPage> {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text(matchedPlant.plantName),
+                  title: Text(matchedDisease.diseaseName),
                   content: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Type: ${matchedPlant.type}'),
-                      Text('Severity: ${matchedPlant.severity}'),
-                      Text('Temperature: ${matchedPlant.temperature}'),
+                      Text('Type: ${matchedDisease.type}'),
+                      Text('Severity: ${matchedDisease.severity}'),
+                      Text('Temperature: ${matchedDisease.temperature}'),
                       const SizedBox(height: 10),
                       Text(
                         'Description:',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Text(matchedPlant.description),
+                      Text(matchedDisease.description),
                     ],
                   ),
                   actions: [
@@ -131,29 +128,26 @@ class _ScanPageState extends State<ScanPage> {
               );
 
             } else {
-              Plant matchedPlant = Plant.plantList.firstWhere(
-                (plant) => plant.key == highestConfidenceEntry.key,
-                orElse: () => Plant(
+              Disease matchedDisease = Disease.diseaseList.firstWhere(
+                (disease) => disease.key == highestConfidenceEntry.key,
+                orElse: () => Disease(
                   key: 'Unknown',
-                  plantId: -1,
+                  diseaseId: -1,
                   category: 'Unknown',
-                  plantName: 'Unknown Plant',
+                  diseaseName: 'Unknown Disease',
                   type: 'Unknown Type',
-                  rating: 0.0,
                   severity: "Unknown",
                   temperature: 'N/A',
                   imageURL: 'assets/images/unknown.png',
-                  // isFavorated: false,
                   description: 'No description available',
                   careTips:'',
-                  // isSelected: false,
                 ),
               );
 
               // Add to inference history using the provider
               Provider.of<InferenceHistoryProvider>(context, listen: false)
                   .addInference({
-                'plantName': matchedPlant.plantName,
+                'diseaseName': matchedDisease.diseaseName,
                 'confidence': highestConfidenceEntry.value,
                 'timestamp': DateTime.now().toString(),
                 "imagePath": imagePath!
@@ -162,20 +156,20 @@ class _ScanPageState extends State<ScanPage> {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: Text(matchedPlant.plantName),
+                  title: Text(matchedDisease.diseaseName),
                   content: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text('Type: ${matchedPlant.type}'),
-                      Text('Severity: ${matchedPlant.severity}'),
-                      Text('Temperature: ${matchedPlant.temperature}'),
+                      Text('Type: ${matchedDisease.type}'),
+                      Text('Severity: ${matchedDisease.severity}'),
+                      Text('Temperature: ${matchedDisease.temperature}'),
                       const SizedBox(height: 10),
                       Text(
                         'Description:',
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      Text(matchedPlant.description),
+                      Text(matchedDisease.description),
                     ],
                   ),
                   actions: [
