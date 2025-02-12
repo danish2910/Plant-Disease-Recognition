@@ -7,10 +7,10 @@ class Constants {
   static var blackColor = Colors.black54;
 
   //Onboarding texts
-  static var titleOne = "Learn more about plants";
-  static var descriptionOne = "Read how to care for plants in our rich plants guide.";
-  static var titleTwo = "Find a plant lover friend";
-  static var descriptionTwo = "Are you a plant lover? Connect with other plant lovers.";
-  static var titleThree = "Plant a tree, green the Earth";
-  static var descriptionThree = "Find almost all types of plants that you like here.";
+  static var titleOne = "For healthier tomato crops!";
+  static var descriptionOne = "Identify diseases, monitor environmental factors, and improve your yield effortlessly.";
+  static var titleTwo = "Snap a picture, get results!";
+  static var descriptionTwo = "Identify tomato diseases with our powerful deep learning model in seconds.";
+  // static var titleThree = "Plant a tree, green the Earth";
+  // static var descriptionThree = "Find almost all types of plants that you like here.";
 }

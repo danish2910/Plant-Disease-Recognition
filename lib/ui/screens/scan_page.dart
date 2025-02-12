@@ -60,6 +60,7 @@ class _ScanPageState extends State<ScanPage> {
       var imageFile = await http.MultipartFile.fromPath(
           'image', imagePath!); // 'image' is the key here
       request.files.add(imageFile);
+      request.headers['X-API-KEY'] = "solanumcare";
 
       try {
         var streamedResponse = await request.send();
@@ -75,12 +76,12 @@ class _ScanPageState extends State<ScanPage> {
             classification = await getSortedPredictionMap(predictionValues);
 
             var highestConfidenceEntry = classification!.entries.first;
-            if (highestConfidenceEntry.value < 0.8) {
+            if (highestConfidenceEntry.value < 0.6) {
               Plant matchedPlant = Plant(
                 key: 'Unknown',
                 plantId: -1,
                 category: 'Unknown',
-                plantName: 'Unknown Plant',
+                plantName: 'Unknown Disease',
                 type: 'Unknown Type',
                 rating: 0.0,
                 severity: "Unknown",

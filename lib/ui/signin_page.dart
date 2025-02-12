@@ -17,7 +17,6 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // Function to handle sign in with email and password
@@ -25,8 +24,8 @@ class _SignInState extends State<SignIn> {
     try {
       // Attempt to sign in with email and password
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: _emailController.text,
-        password: _passwordController.text,
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
 
       // If successful, navigate to the RootPage
@@ -38,24 +37,71 @@ class _SignInState extends State<SignIn> {
         ),
       );
     } on FirebaseAuthException catch (e) {
-      // Display error message if sign-in fails
-      // ScaffoldMessenger.of(context).showSnackBar(
-      //   SnackBar(content: Text(e.toString())),
-      // )
-      if (e.code == 'invalid-credential') {
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text("Sign-In Error"),
-            content: Text("E-mail or password is incorrect."),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("OK")),
-            ],
-          ),
-        );
+      String errorMessage;
+
+      // Handle specific FirebaseAuthException errors
+      switch (e.code) {
+        case 'invalid-email':
+          errorMessage = 'The email address is not valid. Please check and try again.';
+          break;
+        case 'channel-error':
+          errorMessage = 'Email or password is not filled, please fill them.';
+          break;
+        case 'user-disabled':
+          errorMessage = 'This user account has been disabled. Contact support for assistance.';
+          break;
+        case "invalid-credential":
+          errorMessage = 'This credential is wrong, please enter the correct email or password.';
+          break;
+        case 'user-not-found':
+          errorMessage = 'No user found with this email. Please check or register a new account.';
+          break;
+        case 'wrong-password':
+          errorMessage = 'Incorrect password. Please try again.';
+          break;
+        case 'too-many-requests':
+          errorMessage = 'Too many attempts. Please wait and try again later.';
+          break;
+        case 'operation-not-allowed':
+          errorMessage = 'Email/password sign-in is disabled. Contact support for assistance.';
+          break;
+        case 'network-request-failed':
+          errorMessage = 'A network error occurred. Please check your connection and try again.';
+          break;
+        default:
+          errorMessage = 'An unexpected error occurred. Please try again.';
+          break;
       }
+
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Sign-In Error"),
+          content: Text(errorMessage),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
+    } catch (e) {
+      // Catch any unexpected exceptions
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("Error"),
+          content: const Text("An unexpected error occurred. Please try again later."),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("OK"),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -108,8 +154,7 @@ class _SignInState extends State<SignIn> {
                     color: Constants.primaryColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                   child: const Center(
                     child: Text(
                       'Sign In',
@@ -125,27 +170,31 @@ class _SignInState extends State<SignIn> {
               GestureDetector(
                 onTap: () {
                   Navigator.pushReplacement(
-                      context,
-                      PageTransition(
-                          child: const ForgotPassword(),
-                          type: PageTransitionType.bottomToTop));
+                    context,
+                    PageTransition(
+                      child: const ForgotPassword(),
+                      type: PageTransitionType.bottomToTop,
+                    ),
+                  );
                 },
                 child: Center(
                   child: Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                        text: 'Forgot Password? ',
-                        style: TextStyle(
-                          color: Constants.blackColor,
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'Forgot Password? ',
+                          style: TextStyle(
+                            color: Constants.blackColor,
+                          ),
                         ),
-                      ),
-                      TextSpan(
-                        text: 'Reset Here',
-                        style: TextStyle(
-                          color: Constants.primaryColor,
+                        TextSpan(
+                          text: 'Reset Here',
+                          style: TextStyle(
+                            color: Constants.primaryColor,
+                          ),
                         ),
-                      ),
-                    ]),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -164,27 +213,31 @@ class _SignInState extends State<SignIn> {
               GestureDetector(
                 onTap: () {
                   Navigator.pushReplacement(
-                      context,
-                      PageTransition(
-                          child: const SignUp(),
-                          type: PageTransitionType.bottomToTop));
+                    context,
+                    PageTransition(
+                      child: const SignUp(),
+                      type: PageTransitionType.bottomToTop,
+                    ),
+                  );
                 },
                 child: Center(
                   child: Text.rich(
-                    TextSpan(children: [
-                      TextSpan(
-                        text: 'New to SolanumCare? ',
-                        style: TextStyle(
-                          color: Constants.blackColor,
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: 'New to SolanumCare? ',
+                          style: TextStyle(
+                            color: Constants.blackColor,
+                          ),
                         ),
-                      ),
-                      TextSpan(
-                        text: 'Register',
-                        style: TextStyle(
-                          color: Constants.primaryColor,
+                        TextSpan(
+                          text: 'Register',
+                          style: TextStyle(
+                            color: Constants.primaryColor,
+                          ),
                         ),
-                      ),
-                    ]),
+                      ],
+                    ),
                   ),
                 ),
               ),

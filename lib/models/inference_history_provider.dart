@@ -34,8 +34,6 @@ class InferenceHistoryProvider with ChangeNotifier {
         var data = doc.data() as Map<String, dynamic>;
         // Ensure the timestamp is properly converted
         if (data['timestamp'] != null && data['timestamp'] is Timestamp) {
-          // data['timestamp'] = DateFormat('yyyy-MM-dd - HH:mm')
-          //     .format((data['timestamp'] as Timestamp).toDate());
            data['timestamp'];
         } else {
           data['timestamp'] = 'Unknown Time'; // Handle missing or invalid timestamp

@@ -11,16 +11,6 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  // Toggle Favorite button
-  // bool toggleIsFavorited(bool isFavorited) {
-  //   return !isFavorited;
-  // }
-
-  // Toggle add/remove from cart
-  // bool toggleIsSelected(bool isSelected) {
-  //   return !isSelected;
-  // }
-
   // Expandable sections states
   bool isDescriptionExpanded = true;
   bool isCareTipsExpanded = false;

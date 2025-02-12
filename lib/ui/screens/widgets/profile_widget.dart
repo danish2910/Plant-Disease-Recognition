@@ -49,7 +49,6 @@ class ProfileWidget extends StatelessWidget {
             },
           );
         } else {
-          // You can handle other taps here if needed
           print('Tapped on: $title');
         }
       },

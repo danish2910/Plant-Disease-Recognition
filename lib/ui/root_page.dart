@@ -52,6 +52,7 @@ class _RootPageState extends State<RootPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -61,7 +62,6 @@ class _RootPageState extends State<RootPage> {
               fontWeight: FontWeight.w500,
               fontSize: 24,
             ),),
-            //Icon(Icons.notifications, color: Constants.blackColor, size: 30.0,)
           ],
         ),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -71,13 +71,16 @@ class _RootPageState extends State<RootPage> {
         index: _bottomNavIndex,
         children: _widgetOptions(),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: Visibility(
+  visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
+  child: FloatingActionButton(
         onPressed: (){
           Navigator.push(context, PageTransition(child: const ScanPage(), type: PageTransitionType.bottomToTop));
         },
         child: Image.asset('assets/images/code-scan-two.png', height: 30.0,),
         backgroundColor: Constants.primaryColor,
       ),
+),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: AnimatedBottomNavigationBar(
         splashColor: Constants.primaryColor,
@@ -90,11 +93,6 @@ class _RootPageState extends State<RootPage> {
         onTap: (index){
           setState(() {
             _bottomNavIndex = index;
-            // final List<Plant> favoritedPlants = Plant.getFavoritedPlants();
-            // final List<Plant> addedToCartPlants = Plant.addedToCartPlants();
-
-            // favorites = favoritedPlants;
-            // myCart = addedToCartPlants.toSet().toList();
           });
         }
       ),

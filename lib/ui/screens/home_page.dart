@@ -81,6 +81,12 @@ class _HomePageState extends State<HomePage> {
       return SizedBox.shrink(); // Return empty widget if no image
     }
 
+    // Wrap imageWidget with ClipRRect to apply rounded corners
+    imageWidget = ClipRRect(
+      borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
+      child: imageWidget,
+    );
+
     return GestureDetector(
       onTap: () => Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => Scaffold(
@@ -89,16 +95,20 @@ class _HomePageState extends State<HomePage> {
             children: [
               Hero(
                 tag: timestamp,
-                child: imageWidget,
+                child: imageWidget, // Hero with rounded corners
               ),
-              Text(history["plantName"]),
+              SizedBox(
+                height: 10,
+              ),
+              Text(history["plantName"],
+                  style: TextStyle(fontWeight: FontWeight.bold)),
             ],
           ),
         ),
       )),
       child: Hero(
         tag: timestamp,
-        child: imageWidget,
+        child: imageWidget, // Hero with rounded corners
       ),
     );
   }
@@ -214,35 +224,6 @@ class _HomePageState extends State<HomePage> {
                       margin: const EdgeInsets.symmetric(horizontal: 10),
                       child: Stack(
                         children: [
-                          // Positioned(
-                          //   top: 10,
-                          //   right: 20,
-                          //   child: Container(
-                          //     height: 50,
-                          //     width: 50,
-                          //     child: IconButton(
-                          //       onPressed: () {
-                          //         setState(() {
-                          //           bool isFavorited = toggleIsFavorated(
-                          //               filteredPlants[index].isFavorated);
-                          //           filteredPlants[index].isFavorated =
-                          //               isFavorited;
-                          //         });
-                          //       },
-                          //       icon: Icon(
-                          //         filteredPlants[index].isFavorated == true
-                          //             ? Icons.favorite
-                          //             : Icons.favorite_border,
-                          //         color: Constants.primaryColor,
-                          //       ),
-                          //       iconSize: 30,
-                          //     ),
-                          //     decoration: BoxDecoration(
-                          //       color: Colors.white,
-                          //       borderRadius: BorderRadius.circular(50),
-                          //     ),
-                          //   ),
-                          // ),
                           Positioned(
                             left: 30, // Adjust as needed for positioning
                             right: 30, // Adjust as needed for positioning
@@ -311,17 +292,6 @@ class _HomePageState extends State<HomePage> {
               builder: (context, inferenceHistoryProvider, child) {
                 List<Map<String, dynamic>> inferenceHistory =
                     inferenceHistoryProvider.inferenceHistory;
-                // DateTime parseCustomTimestamp(String timestamp) {
-                //   // Define the format of the timestamp string
-                //   DateFormat customFormat =
-                //       DateFormat("d MMMM yyyy 'at' HH:mm:ss 'UTC'Z");
-
-                //   // Remove the " UTC+8" part from the string
-                //   timestamp = timestamp.replaceAll(RegExp(r' UTC.*'), ' UTC+0');
-
-                //   // Parse the timestamp string into a DateTime object
-                //   return customFormat.parse(timestamp);
-                // }
 
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -350,7 +320,10 @@ class _HomePageState extends State<HomePage> {
                             context,
                             history['image'], // image in base64 format
                             history['imagePath'], // image from file path
-                            history["timestamp"] is String ?  Timestamp.fromDate(DateTime.parse(history["timestamp"])) : history["timestamp"], // unique tag for Hero
+                            history["timestamp"] is String
+                                ? Timestamp.fromDate(
+                                    DateTime.parse(history["timestamp"]))
+                                : history["timestamp"], // unique tag for Hero
                             history,
                           ),
                           contentPadding: const EdgeInsets.all(16),

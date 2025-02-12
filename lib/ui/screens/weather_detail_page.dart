@@ -8,7 +8,8 @@ import 'package:intl/intl.dart';
 class WeatherDetailPage extends StatefulWidget {
   final dailyForecastWeather;
 
-  const WeatherDetailPage({Key? key, this.dailyForecastWeather}) : super(key: key);
+  const WeatherDetailPage({Key? key, this.dailyForecastWeather})
+      : super(key: key);
 
   @override
   State<WeatherDetailPage> createState() => _WeatherDetailPageState();
@@ -59,16 +60,6 @@ class _WeatherDetailPageState extends State<WeatherDetailPage> {
         centerTitle: true,
         backgroundColor: _constants.primaryColor,
         elevation: 0.0,
-        // actions: [
-        //   Padding(
-        //     padding: const EdgeInsets.only(right: 8.0),
-        //     child: IconButton(
-        //         onPressed: () {
-        //           print("Settings Tapped!");
-        //         },
-        //         icon: const Icon(Icons.settings)),
-        //   )
-        // ],
       ),
       body: Stack(
         alignment: Alignment.center,
@@ -78,7 +69,7 @@ class _WeatherDetailPageState extends State<WeatherDetailPage> {
             bottom: 0,
             left: 0,
             child: Container(
-              height: size.height * .75,
+              height: size.height * .80,
               width: size.width,
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -261,7 +252,6 @@ class _WeatherDetailPageState extends State<WeatherDetailPage> {
                                                     ],
                                                   ),
                                                   Row(
-                                                    
                                                     children: [
                                                       Text(
                                                         getForecastWeather(0)[

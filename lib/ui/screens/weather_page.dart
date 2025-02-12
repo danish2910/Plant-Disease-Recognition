@@ -26,7 +26,7 @@ class _WeatherPageState extends State<WeatherPage> {
   final Constants _constants = Constants();
   static String API_KEY = dotenv.env['api_key_weather']!;
 
-  String location = 'Kuala Lumpur'; // Default location
+  String location = 'Serdang'; // Default location
   String weatherIcon = 'heavycloud.png';
   int temperature = 0;
   int windSpeed = 0;
@@ -144,14 +144,9 @@ class _WeatherPageState extends State<WeatherPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Image.asset(
-                          "assets/images/menu.png",
-                          width: 40,
-                          height: 40,
-                        ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -167,60 +162,65 @@ class _WeatherPageState extends State<WeatherPage> {
                             IconButton(
                               onPressed: () {
                                 _cityController.clear();
-                                showMaterialModalBottomSheet(
+                                showModalBottomSheet(
+                                  isScrollControlled: true,
                                   context: context,
-                                  builder: (context) => SingleChildScrollView(
-                                    controller:
-                                        ModalScrollController.of(context),
-                                    child: Container(
-                                      height: size.height * .2,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                        vertical: 10,
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            width: 70,
-                                            child: Divider(
-                                              thickness: 3.5,
-                                              color: _constants.primaryColor,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          TextField(
-                                            onChanged: (searchText) {
-                                              fetchWeatherData(searchText);
-                                            },
-                                            controller: _cityController,
-                                            autofocus: true,
-                                            decoration: InputDecoration(
-                                              prefixIcon: Icon(
-                                                Icons.search,
+                                  builder: (context) => Padding(
+                                    padding: MediaQuery.of(context).viewInsets,
+                                    child: SingleChildScrollView(
+                                      controller:
+                                          ModalScrollController.of(context),
+                                      child: Container(
+                                        height: size.height * .2,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 10,
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            SizedBox(
+                                              width: 70,
+                                              child: Divider(
+                                                thickness: 3.5,
                                                 color: _constants.primaryColor,
                                               ),
-                                              suffixIcon: GestureDetector(
-                                                onTap: () =>
-                                                    _cityController.clear(),
-                                                child: Icon(
-                                                  Icons.close,
-                                                  color:
-                                                      _constants.primaryColor,
+                                            ),
+                                            const SizedBox(height: 10),
+                                            TextField(
+                                              onChanged: (searchText) {
+                                                fetchWeatherData(searchText);
+                                              },
+                                              controller: _cityController,
+                                              autofocus: true,
+                                              decoration: InputDecoration(
+                                                prefixIcon: Icon(
+                                                  Icons.search,
+                                                  color: _constants.primaryColor,
                                                 ),
-                                              ),
-                                              hintText:
-                                                  'Search city e.g. Kuala Lumpur',
-                                              focusedBorder: OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                  color:
-                                                      _constants.primaryColor,
+                                                suffixIcon: GestureDetector(
+                                                  onTap: () =>
+                                                      _cityController.clear(),
+                                                  child: Icon(
+                                                    Icons.close,
+                                                    color:
+                                                        _constants.primaryColor,
+                                                  ),
                                                 ),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
+                                                hintText:
+                                                    'Search city e.g. Kuala Lumpur',
+                                                focusedBorder: OutlineInputBorder(
+                                                  borderSide: BorderSide(
+                                                    color:
+                                                        _constants.primaryColor,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                            ElevatedButton(onPressed: (){Navigator.of(context).pop();}, child: Text("Close"))
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),

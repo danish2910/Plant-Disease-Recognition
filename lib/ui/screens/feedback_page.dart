@@ -147,18 +147,17 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ElevatedButton(
                 onPressed: _pickImage,
                 style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
                   backgroundColor: Constants.primaryColor,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.camera_alt),  // Camera icon for picking image
-                    const SizedBox(width: 8),
-                    //Text('Pick an Image'),
+                    Icon(Icons.photo_album_rounded),  // Camera icon for picking image
                   ],
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 1),
               // Display the selected image preview
               if (_imageFile != null)
                 Image.file(
@@ -172,6 +171,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
               ElevatedButton(
                 onPressed: _submitFeedback,
                 style: ElevatedButton.styleFrom(
+                  iconColor: Colors.white,
                   backgroundColor: Constants.primaryColor,
                 ),
                 child: Row(
@@ -179,7 +179,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                   children: [
                     Icon(Icons.send),  // Send icon
                     const SizedBox(width: 8),
-                    Text('Submit'),
+                    Text('Submit',style: TextStyle(color: Colors.white),),
                   ],
                 ),
               ),

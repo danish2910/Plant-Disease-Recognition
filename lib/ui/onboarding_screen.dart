@@ -28,7 +28,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               onTap: () {
                 Navigator.pushReplacement(
                     context, MaterialPageRoute(builder: (_) => const SignIn()));
-              }, //to login screen. We will update later
+              }, //to login screen
               child: const Text(
                 'Skip',
                 style: TextStyle(
@@ -53,19 +53,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             controller: _pageController,
             children: [
               createPage(
-                image: 'assets/images/plant-one.png',
+                image: 'assets/images/page1.png',
                 title: Constants.titleOne,
                 description: Constants.descriptionOne,
               ),
               createPage(
-                image: 'assets/images/plant-two.png',
+                image: 'assets/images/page2.png',
                 title: Constants.titleTwo,
                 description: Constants.descriptionTwo,
-              ),
-              createPage(
-                image: 'assets/images/plant-three.png',
-                title: Constants.titleThree,
-                description: Constants.descriptionThree,
               ),
             ],
           ),
@@ -133,7 +128,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   List<Widget> _buildIndicator() {
     List<Widget> indicators = [];
 
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 2; i++) {
       if (currentIndex == i) {
         indicators.add(_indicator(true));
       } else {
@@ -169,7 +164,7 @@ class createPage extends StatelessWidget {
             child: Image.asset(image),
           ),
           const SizedBox(
-            height: 20,
+            height: 5,
           ),
           Text(
             title,
@@ -181,13 +176,13 @@ class createPage extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 20,
+            height: 5,
           ),
           Text(
             description,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w400,
               color: Colors.grey,
             ),

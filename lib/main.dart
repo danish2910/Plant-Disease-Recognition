@@ -11,10 +11,8 @@ import 'ui/onboarding_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';  // Import FirebaseAuth
-
 void main() async {
   await dotenv.load(fileName: ".env");
-  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -24,7 +22,9 @@ void main() async {
       child: MyApp(),
     ),
   );
+
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
